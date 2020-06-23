@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>{{ _("Internet Cube installation") }}</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link media="all" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}"    rel="stylesheet">
+  <link media="all" type="text/css" href="{{ url_for('static', filename='css/fork-awesome.min.css') }}" rel="stylesheet">
+  <link media="all" type="text/css" href="{{ url_for('static', filename='css/main.css') }}"             rel="stylesheet">
+  <link type="image/png" href="{{ url_for('static', filename='img/favicon.ico') }}" rel="shortcut icon" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="row m-5">
+            <div id="logo" class="col-12 text-center">
+                <img src="{{ url_for('static', filename='img/cube.png') }}"/>
+                <h2>{{ _("Înternet Cube installation") }}</h2>
+            </div>
+        </div>
+
+        {% block main %}{% endblock %}
+    </div>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js')    }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js')             }}"></script>
+</body>
+
+<html>

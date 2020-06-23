@@ -1,0 +1,41 @@
+@import url(jura-font.css);
+
+#logo h1, #logo h2, #logo h3 {
+    font-family: jurabook;
+}
+
+#logo img {
+    max-height: 12em;
+}
+
+.custom-file {
+    height: auto;
+}
+
+.custom-file-label {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.custom-file-label::after {
+    content: "\f002";
+    font-family: "ForkAwesome";
+    text-rendering: auto;
+}
+
+.custom-control-label::after, .custom-control-label::before {
+    margin-top: 0.15em;
+}
+
+.step-info {
+    color: black;
+}
+
+pre.debug {
+	color: white;
+	background-color: #333;
+	border-radius: 5px;
+	padding-top: 1px;
+	padding-bottom: 1px;
+    max-height: 30em;
+}

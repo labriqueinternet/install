@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<div id="install_status" class="row justify-content-center">
+
+    <div class="mb-5 col-sm-12 col-md-8 col-lg-6">
+
+        <div id="progress" class="progress mb-3">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+
+        <ul id="steps" class="list-group">
+            {% for id, descr in steps.items() %}
+            <li id="step-{{ id }}" class="list-group-item">
+                <h5 class="mb-0"><i class="step-icon fa fa-fw"></i> {{ descr }}</h5>
+                <code class="step-info ml-5" style="display: none;"></code>
+                <pre class="mt-2 mb-0 px-2 debug" style="display: none;"></pre>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="row">
+            <div class="col-12">
+            <div class="mt-2 form-group pull-right">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="debug_mode">
+                    <label class="custom-control-label" for="debug_mode">{{ _("Debug mode") }}</label>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

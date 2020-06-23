@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block main %}
+<form id="install_form" action="/" method="POST" novalidate>
+<div class="row justify-content-center">
+    <div class="col-8 mb-3">
+        <div class="card">
+          <h4 class="card-header">{{ _("Server configuration") }}</h4>
+          <div class="card-body">
+              <div class="alert alert-info">
+                  {{ _("If you do not have a domain name, you can choose one ending by nohost.me or noho.st (the availability will be automatically checked).") }}
+              </div>
+              <div class="form-group row">
+                  <label for="main_domain" class="col-3 col-form-label">{{ _("Main domain") }}</label>
+                  <div class="col-9">
+                      <input type="text" class="validate form-control" name="main_domain" id="main_domain" placeholder="{{ _("myserver.nohost.me") }}" pattern="^([^\W_A-Z]+([-]*[^\W_A-Z]+)*\.)+([^\W\d_]{2,})$">
+                      <div class="invalid-feedback default">
+                          {{ _("Please specify a valid domain") }}
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="col-8 mb-3">
+        <div class="card">
+          <h4 class="card-header">{{ _("First user (administrator)") }}</h4>
+          <div class="card-body">
+              <div class="form-group row">
+                  <label for="username" class="col-3 col-form-label">{{ _("Username") }}</label>
+                  <div class="col-9">
+                      <input type="text" class="validate form-control" name="username" id="username" placeholder="{{ _("sasha") }}" pattern="^[a-z0-9_]{3,}$">
+                      <div class="invalid-feedback default">
+                          {{ _("Please specify a valid username with at least three characters (only lowercase, numbers or _)") }}
+                      </div>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="fullname" class="col-3 col-form-label">{{ _("Full name") }}</label>
+                  <div class="col-9">
+                      <input type="text" class="validate form-control" name="fullname" id="fullname" placeholder="{{ _("Sasha Doe") }}" pattern="^([^\W\d_]{2,30}[ ,.'-]{0,3})+$">
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="password" class="col-3 col-form-label">{{ _("Password") }}</label>
+                  <div class="col-9">
+                      <input type="password" class="validate form-control" name="password" id="password" pattern="^.{8,}$">
+                      <div class="invalid-feedback default">
+                          {{ _("Passwords must be at least 8 characters") }}
+                      </div>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="password_repeat" class="col-3 col-form-label">{{ _("Password (repeat)") }}</label>
+                  <div class="col-9">
+                      <input type="password" class="validate form-control" name="password_repeat" id="password_repeat" pattern="^.{8,}$" custom-validation>
+                      <div class="invalid-feedback default">
+                          {{ _("Passwords must be at least 8 characters") }}
+                      </div>
+                      <div class="invalid-feedback nomatch">
+                          {{ _("Passwords do not match") }}
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="col-8 mb-3">
+        <div id="vpn" class="card">
+          <h4 class="card-header">
+              <div class="custom-control custom-switch">
+                  <input type="checkbox" class="custom-control-input" name="enable_vpn" id="enable_vpn" checked="">
+                  <label class="custom-control-label" for="enable_vpn">{{ _("VPN configuration") }}</label>
+              </div>
+          </h4>
+          <div class="collapse show card-body">
+              <div class="form-group row">
+                  <label for="cubefile" class="col-3 col-form-label">{{ _(".cube file") }}</label>
+                  <div class="custom-file col-9">
+                      <input type="file" class="validate custom-file-input" name="cubefile" id="cubefile" accept=".cube" custom-validation>
+                      <label class="custom-file-label" for="cubefile">{{ _("Choose file") }}</label>
+                      <div class="invalid-feedback default">
+                          {{ _("You must provide a valid .cube file to enable the VPN") }}
+                      </div>
+                      <div class="invalid-feedback invalidjson">
+                          {{ _("Could not load this file as json ... Is it a valid .cube file ?") }}
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="col-8 mb-3">
+        <div id="wifi" class="card">
+            <h4 class="card-header">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" name="enable_wifi" id="enable_wifi" checked="">
+                    <label class="custom-control-label" for="enable_wifi">{{ _("Wifi Hotspot configuration") }}</label>
+                </div>
+            </h4>
+          <div class="collapse show card-body">
+              <div class="form-group row">
+                  <label for="wifi_ssid" class="col-3 col-form-label">{{ _("Nom (SSID)") }}</label>
+                  <div class="col-9">
+                      <input type="text" class="validate form-control" name="wifi_ssid" id="wifi_ssid" placeholder="{{ _("myNeutralNetwork") }}">
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="wifi_password" class="col-3 col-form-label">{{ _("Password") }}</label>
+                  <div class="col-9">
+                      <input type="password" class="validate form-control" name="wifi_password" id="wifi_password" pattern="^.{8,}$">
+                      <div class="invalid-feedback default">
+                          {{ _("Passwords must be at least 8 characters") }}
+                      </div>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="wifi_password_repeat" class="col-3 col-form-label">{{ _("Password (repeat)") }}</label>
+                  <div class="col-9">
+                      <input type="password" class="validate form-control" name="wifi_password_repeat" id="wifi_password_repeat" pattern="^.{8,}$" custom-validation>
+                      <div class="invalid-feedback default">
+                          {{ _("Passwords must be at least 8 characters") }}
+                      </div>
+                      <div class="invalid-feedback nomatch">
+                          {{ _("Passwords do not match") }}
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="col-8 mb-5 text-center">
+        <div id="submit_error" class="text-danger mb-2" style="display: none;"></div>
+        <button type="submit" class="btn btn-primary"><i class="fa fa-rocket" aria-hidden="true"></i> {{ _("Let's go!") }}</button> 
+    </div>
+
+</div>
+</form>
+{% endblock %}
