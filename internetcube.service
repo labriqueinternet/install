@@ -1,0 +1,15 @@
+[Unit]
+Description=Internet Cube installation interface
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/var/www/install_internetcube/
+ExecStart=/var/www/install_internetcube/venv/bin/flask run -p 13121
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,3 +1,4 @@
+import os
 import json
 import subprocess
 from requests.utils import requote_uri
@@ -12,11 +13,11 @@ def step(func):
 @step
 def upgrade(install_params):
 
-    apt = "DEBIAN_FRONTEND=noninteractive APT_LISTCHANGES_FRONTEND=none LC_ALL=C" \
+    apt = "DEBIAN_FRONTEND=noninteractive APT_LISTCHANGES_FRONTEND=none LC_ALL=C " \
           "apt-get -o=Acquire::Retries=3 -o=Dpkg::Use-Pty=0 --quiet --assume-yes "
 
-    run_cmd(apt + "udate")
-    run_cmd(apt + "dist-upgrade -o Dpkg::Options::='--force-confold' --fix-broken --show-upgraded ")
+    run_cmd(apt + "update")
+    run_cmd(apt + "dist-upgrade -o Dpkg::Options::='--force-confold' --fix-broken --show-upgraded")
     run_cmd(apt + "autoremove")
 
 
@@ -42,7 +43,7 @@ def firstuser(install_params):
 
 @step
 def vpnclient(install_params):
-    if not install_params["enable_vpnclient"]:
+    if not install_params["enable_vpn"]:
         return "skipped"
 
     main_domain_esc = requote_uri(install_params["main_domain"])
@@ -59,7 +60,7 @@ def vpnclient(install_params):
 
 @step
 def hotspot():
-    if not install_params["enable_hotspot"]:
+    if not install_params["enable_wifi"]:
         return "skipped"
 
     main_domain_esc = requote_uri(install_params["main_domain"])
@@ -106,7 +107,7 @@ def reboot():
 def run_cmd(cmd):
 
     append_step_log("Running: " + cmd)
-    subprocess.check_call(cmd + " &>> ./data/%s.logs" % current_step.__name__, shell=True)
+    subprocess.check_call(cmd + " &>> ./data/%s.logs" % current_step.__name__, shell=True, executable='/bin/bash')
 
 def append_step_log(message):
     open("./data/%s.logs" % current_step.__name__, "a").write(message + "\n")
@@ -116,6 +117,8 @@ def set_step_status(status):
 
 if __name__ == "__main__":
 
+    cwd = os.path.dirname(os.path.realpath(__file__))
+    os.chdir(cwd)
     install_params = json.loads(open("./data/install_params.json").read())
 
     for step in steps:
@@ -123,13 +126,16 @@ if __name__ == "__main__":
         current_step = step
         set_step_status("ongoing")
         try:
+            append_step_log("============================")
             ret = step(install_params)
             assert ret in [None, "success", "skipped"]
+        except CalledProcessError as e:
+            append_step_log(str(e))
         except Exception as e:
             set_step_status("failed")
             import traceback
             append_step_log(traceback.format_exc())
             append_step_log(str(e))
             break
-        else:
-            set_step_status(ret if ret else "success")
+
+        set_step_status(ret if ret else "success")

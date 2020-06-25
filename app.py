@@ -29,26 +29,24 @@ def main():
     # strings are needed and therefore we won't be able to easily collect them
     # for translation generation)
     # But the consequence is : this gotta be kept in sync with the step list
-    steps_with_i18n = {
-        "upgrade": _("Upgrade the system"),
-        "postinstall": _("Postinstall Yunohost"),
-        "firstuser": _("Create first user"),
-        "vpnclient": _("Install and configure the VPN"),
-        "hotspot": _("Install and configure the WiFi Hotspot"),
-        "customscript": _("Run the custom script"),
-        "reboot": _("Reboot the system"),
-    }
+    steps_with_i18n = [
+        ("upgrade", _("Upgrade the system")),
+        ("postinstall", _("Postinstall Yunohost")),
+        ("firstuser", _("Create first user")),
+        ("vpnclient", _("Install and configure the VPN")),
+        ("hotspot", _("Install and configure the WiFi Hotspot")),
+        ("customscript", _("Run the custom script")),
+        ("reboot", _("Reboot the system")),
+    ]
 
-    assert set(steps_with_i18n.keys()) == set(steps)
-
+    translated_steps = [step for step, _ in steps_with_i18n]
+    assert set(translated_steps) == set(steps)
 
     if request.method == "GET":
-        status = subprocess.check_output("systemctl is-active internetcube_install.service || true", shell=True).strip().decode("utf-8")
-        if status == "inactive" or not os.path.exists("./data/install_params.json"):
+        if not os.path.exists("./data/install_params.json"):
             return render_template('form.html')
         else:
             return render_template('status.html', steps=steps_with_i18n, status=status)
-
 
     if request.method == 'POST':
         form_data = {k:v for k, v in request.form.items()}
@@ -65,7 +63,8 @@ def start_install(form_data):
         f.write(json.dumps(form_data))
 
     os.system("systemctl reset-failed internetcube_install.service &>/dev/null || true ")
-    start_status = os.system("systemd-run --same-dir --unit=internetcube_install python3 ./internetcube_install.py")
+    cwd = os.path.dirname(os.path.realpath(__file__))
+    start_status = os.system("systemd-run --unit=internetcube_install %s/venv/bin/python3 %s/internetcube_install.py" % (cwd, cwd))
 
     sleep(3)
 
@@ -75,8 +74,8 @@ def start_install(form_data):
     elif start_status != 0:
         return "Failed to start the install script ... maybe the app ain't started as root ?", 500
     else:
-        status = subprocess.check_output("systemctl status internetcube_install.service || true", shell=True).strip().decode("utf-8")
-        return "The install script was started but is still not active ... \n" + status , 500
+        status = subprocess.check_output("journalctl --no-pager --no-hostname -n 20 -u internetcube_install.service || true", shell=True).strip().decode("utf-8")
+        return "The install script was started but is still not active ... \n<pre style='text-align:left;'>" + status + "</pre>", 500
 
 
 def validate(form):
@@ -115,8 +114,15 @@ def status():
 
     def most_recent_info(log_path):
 
-        cmd = "tac %s | grep -m 1 ' INFO \| SUCCESS ' | cut -d ' ' -f 5-" % log_path
-        return subprocess.check_output(cmd, shell=True).strip().decode("utf-8")
+        cmd = "tac %s | tail -n 50 | grep -m 1 ' INFO \| SUCCESS ' | cut -d ' ' -f 5-" % log_path
+        message = subprocess.check_output(cmd, shell=True).strip().decode("utf-8")
+
+        if not message:
+            message = subprocess.check_output("tail -n 1 %s" % log_path, shell=True).strip().decode("utf-8")
+
+        return redact_passwords(message)
+
+    update_info_to_redact()
 
     data = []
     for step in steps:
@@ -134,13 +140,35 @@ def status():
 @app.route('/debug', methods = ['GET'])
 def debug():
 
+    update_info_to_redact()
     data = []
     for step in steps:
         logs_path = "./data/%s.logs" % step
         data.append({
             "id": step,
-            "logs": open(logs_path).read().strip() if os.path.exists(logs_path) else [],
+            "logs": redact_passwords(open(logs_path).read().strip()) if os.path.exists(logs_path) else [],
         })
     return jsonify(data)
 
 
+to_redact = []
+def update_info_to_redact():
+
+    if not os.path.exists("./data/install_params.json"):
+        return content
+
+    data = json.loads(open("./data/install_params.json").read())
+
+    global to_redact
+    to_redact = []
+    for key, value in data.items():
+        if value and "pass" in key:
+            to_redact.append(value)
+
+
+def redact_passwords(content):
+
+    for value in to_redact:
+        content = content.replace(value, "[REDACTED]")
+
+    return content

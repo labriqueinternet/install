@@ -96,7 +96,7 @@ $(document).ready(function() {
             $("h5", step).removeClass("text-muted");
         }
 
-        if ((step_data.status != "ongoing") || (! step_data.message))
+        if (((step_data.status != "ongoing") && (step_data.status != "failed")) || (! step_data.message))
         {
             $(".step-info", step).hide();
         }
