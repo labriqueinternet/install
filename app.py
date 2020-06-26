@@ -59,6 +59,7 @@ def main():
 
 def start_install(form_data):
 
+    os.system("mkdir -p ./data/")
     with open("./data/install_params.json", "w") as f:
         f.write(json.dumps(form_data))
 
