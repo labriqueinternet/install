@@ -19,9 +19,10 @@
             </li>
             {% endfor %}
         </ul>
-        <div class="row">
+        <div class="mt-2 row">
             <div class="col-12">
-            <div class="mt-2 form-group pull-right">
+            <button id="retry" class="btn btn-outline-warning btn-sm"><i class="fa fa-refresh" aria-hidden="true"></i> {{ _("Retry") }}</button> 
+            <div class="form-group pull-right">
                 <div class="custom-control custom-switch">
                     <input type="checkbox" class="custom-control-input" id="debug_mode">
                     <label class="custom-control-label" for="debug_mode">{{ _("Debug mode") }}</label>

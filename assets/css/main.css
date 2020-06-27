@@ -29,13 +29,14 @@
 
 .step-info {
     color: black;
+    font-size: 0.7em;
 }
 
 pre.debug {
-	color: white;
-	background-color: #333;
-	border-radius: 5px;
-	padding-top: 1px;
-	padding-bottom: 1px;
+    color: white;
+    background-color: #333;
+    border-radius: 5px;
+    padding-top: 1px;
+    padding-bottom: 1px;
     max-height: 30em;
 }

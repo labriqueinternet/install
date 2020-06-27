@@ -33,10 +33,13 @@ def main():
         ("upgrade", _("Upgrade the system")),
         ("postinstall", _("Postinstall Yunohost")),
         ("firstuser", _("Create first user")),
-        ("vpnclient", _("Install and configure the VPN")),
-        ("hotspot", _("Install and configure the WiFi Hotspot")),
+        ("install_vpnclient", _("Install VPN client")),
+        ("configure_vpnclient", _("Configure the VPN")),
+        ("install_hotspot", _("Install the WiFi Hotspot")),
+        ("configure_hotspot", _("Configure the WiFi Hotspot")),
         ("customscript", _("Run the custom script")),
         ("reboot", _("Reboot the system")),
+        ("cleanup", _("Clean things up")),
     ]
 
     translated_steps = [step for step, _ in steps_with_i18n]
@@ -57,11 +60,18 @@ def main():
 
         return start_install(form_data)
 
-def start_install(form_data):
+
+@app.route('/retry', methods = ['POST'])
+def retry():
+    return start_install()
+
+
+def start_install(form_data=None):
 
     os.system("mkdir -p ./data/")
-    with open("./data/install_params.json", "w") as f:
-        f.write(json.dumps(form_data))
+    if form_data:
+        with open("./data/install_params.json", "w") as f:
+            f.write(json.dumps(form_data))
 
     os.system("systemctl reset-failed internetcube_install.service &>/dev/null || true ")
     cwd = os.path.dirname(os.path.realpath(__file__))

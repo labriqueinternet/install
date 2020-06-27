@@ -42,24 +42,30 @@ def firstuser(install_params):
             .format(**install_params))
 
 @step
-def vpnclient(install_params):
+def install_vpnclient(install_params):
     if not install_params["enable_vpn"]:
         return "skipped"
 
     main_domain_esc = requote_uri(install_params["main_domain"])
     run_cmd("yunohost app install vpnclient --force --args \"domain=%s&path=/vpnadmin\"" % main_domain_esc)
+
+
+@step
+def configure_vpnclient(install_params):
+    if not install_params["enable_vpn"]:
+        return "skipped"
+
     run_cmd("yunohost app addaccess vpnclient -u {username}".format(**install_params))
     run_cmd("yunohost app setting vpnclient service_enabled -v 1")
 
-    open("/tmp/config.cube", "w").write(json.dumps(install_params["cubefile"]))
+    open("/tmp/config.cube", "w").write(install_params["cubefile"])
     os.system("chown root:root /tmp/config.cube")
     os.system("chmod 600 /tmp/config.cube")
 
     run_cmd("ynh-vpnclient-loadcubefile.sh -u {username} -p {password} -c /tmp/config.cube".format(**install_params))
 
-
 @step
-def hotspot():
+def install_hotspot():
     if not install_params["enable_wifi"]:
         return "skipped"
 
@@ -76,6 +82,14 @@ def hotspot():
             .format(main_domain_esc=main_domain_esc,
                     wifi_ssid_esc=wifi_ssid_esc,
                     wifi_password_esc=wifi_password_esc))
+
+@step
+def configure_hotspot():
+    if not install_params["enable_wifi"]:
+        return "skipped"
+
+    return "skipped"
+
 # TODO:
 #
 #  yunohost app addaccess hotspot -u "${settings[yunohost,user]}" &>> $log_file
@@ -100,6 +114,11 @@ def customscript():
 def reboot():
     return "skipped"
 
+@step
+def cleanup():
+    return "skipped"
+
+
 # ===============================================================
 # ===============================================================
 # ===============================================================
@@ -115,6 +134,10 @@ def append_step_log(message):
 def set_step_status(status):
     open("./data/%s.status" % current_step.__name__, "w").write(status)
 
+def get_step_status():
+    f = "./data/%s.status" % current_step.__name__
+    return open(f, "r").read().strip() if os.path.exists(f) else None
+
 if __name__ == "__main__":
 
     cwd = os.path.dirname(os.path.realpath(__file__))
@@ -122,15 +145,24 @@ if __name__ == "__main__":
     install_params = json.loads(open("./data/install_params.json").read())
 
     for step in steps:
-
+    
+        global current_step
         current_step = step
+
+        # When re-running the whole thing multiple time,
+        # skip test that were already succesfull / skipped...
+        if get_step_status() in ["success", "skipped"]:
+            continue
+
         set_step_status("ongoing")
         try:
             append_step_log("============================")
             ret = step(install_params)
             assert ret in [None, "success", "skipped"]
-        except CalledProcessError as e:
+        except subprocess.CalledProcessError as e:
+            set_step_status("failed")
             append_step_log(str(e))
+            break
         except Exception as e:
             set_step_status("failed")
             import traceback

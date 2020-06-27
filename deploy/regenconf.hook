@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+. /usr/share/yunohost/helpers
+
+[[ $1 == "pre" ]] || exit 0
+
+nginx_conf_dir="$4/../nginx/etc/nginx/conf.d"
+rm -f $nginx_conf_dir/default.d/redirect_to_admin.conf
+touch $nginx_conf_dir/default.d/redirect_to_admin.conf

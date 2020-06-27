@@ -6,6 +6,7 @@ $(document).ready(function() {
             .done(function(steps) {
                 steps_update_progress_bar(steps);
                 steps.forEach(function (step_data) { steps_update_list(step_data); });
+		steps.forEach(function (step_data) { if (step_data.status == "failed") { $("#retry").show(); } });
             })
             .always(function() {
                 setTimeout(steps_update_view, 2000);
@@ -285,6 +286,9 @@ $(document).ready(function() {
 
     if ($("#install_status").length)
     {
+        $("#retry").hide();
+        $("#retry").click($.post("/retry"));
+
         $("#debug_mode")[0].checked = false;
         $("#debug_mode").click(function() { steps_toggle_debug_mode() });
         steps_update_view();
