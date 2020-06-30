@@ -65,7 +65,7 @@ def configure_vpnclient(install_params):
     run_cmd("ynh-vpnclient-loadcubefile.sh -u {username} -p {password} -c /tmp/config.cube".format(**install_params))
 
 @step
-def install_hotspot():
+def install_hotspot(install_params):
     if not install_params["enable_wifi"]:
         return "skipped"
 
@@ -84,7 +84,7 @@ def install_hotspot():
                     wifi_password_esc=wifi_password_esc))
 
 @step
-def configure_hotspot():
+def configure_hotspot(install_params):
     if not install_params["enable_wifi"]:
         return "skipped"
 
@@ -107,15 +107,15 @@ def configure_hotspot():
 #  fi
 
 @step
-def customscript():
+def customscript(install_params):
     return "skipped"
 
 @step
-def reboot():
+def reboot(install_params):
     return "skipped"
 
 @step
-def cleanup():
+def cleanup(install_params):
     return "skipped"
 
 

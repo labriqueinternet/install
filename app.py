@@ -68,6 +68,9 @@ def retry():
 
 def start_install(form_data=None):
 
+    form_data["enable_vpn"] = True if enable_vpn == "true" else False
+    form_data["enable_hotspot"] = True if enable_hotspot == "true" else False
+
     os.system("mkdir -p ./data/")
     if form_data:
         with open("./data/install_params.json", "w") as f:
