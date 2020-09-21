@@ -29,10 +29,11 @@ def postinstall(install_params):
 @step
 def firstuser(install_params):
 
-    if " " in install_params["fullname"]:
-        install_params["firstname"], install_params["lastname"] = install_params["fullname"].split(" ", 1)
+    if " " in install_params["fullname"].strip():
+        install_params["firstname"], install_params["lastname"] = install_params["fullname"].strip().split(" ", 1)
     else:
-        install_params["firstname"], install_params["lastname"] = install_params["fullname"]
+        install_params["firstname"] = install_params["fullname"]
+        install_params["lastname"] = "FIXMEFIXME" # FIXME
 
     run_cmd("yunohost user create {username} -q 0 "
             "-f {firstname} "
@@ -83,41 +84,18 @@ def install_hotspot(install_params):
                     wifi_ssid_esc=wifi_ssid_esc,
                     wifi_password_esc=wifi_password_esc))
 
-@step
-def configure_hotspot(install_params):
-    if not install_params["enable_wifi"]:
-        return "skipped"
-
-    return "skipped"
-
-# TODO:
-#
-#  yunohost app addaccess hotspot -u "${settings[yunohost,user]}" &>> $log_file
-#
-#  yunohost app setting hotspot ip6_dns0 -v "${settings[hotspot,ip6_dns0]}" &>> $log_file
-#  yunohost app setting hotspot ip6_dns1 -v "${settings[hotspot,ip6_dns1]}" &>> $log_file
-#  yunohost app setting hotspot ip4_dns0 -v "${settings[hotspot,ip4_dns0]}" &>> $log_file
-#  yunohost app setting hotspot ip4_dns1 -v "${settings[hotspot,ip4_dns1]}" &>> $log_file
-#  yunohost app setting hotspot ip4_nat_prefix -v "${settings[hotspot,ip4_nat_prefix]}" &>> $log_file
-#
-#  ynh_wifi_device=$(yunohost app setting hotspot wifi_device 2> /dev/null)
-#
-#  if [ "${ynh_wifi_device}" == none ]; then
-#    yunohost app setting hotspot service_enabled -v 1 &>> $log_file
-#  fi
-
-@step
-def customscript(install_params):
-    return "skipped"
-
-@step
-def reboot(install_params):
-    return "skipped"
+    run_cmd("yunohost app addaccess hotspot -u {username}".format(**install_params))
 
 @step
 def cleanup(install_params):
-    return "skipped"
 
+    run_cmd("rm /etc/nginx/conf.d/default.d/internetcube.conf")
+    run_cmd("rm /usr/share/yunohost/hooks/conf_regen/99-nginx_internetcube")
+    run_cmd("yunohost tools regen-conf nginx --force")
+
+    run_cmd("rm /etc/systemd/system/internetcube.service")
+    run_cmd("systemctl daemon-reload")
+    run_cmd("systemctl stop internetcube") # FIXME : add a delay here before doing this ?
 
 # ===============================================================
 # ===============================================================
@@ -145,8 +123,7 @@ if __name__ == "__main__":
     install_params = json.loads(open("./data/install_params.json").read())
 
     for step in steps:
-    
-        global current_step
+
         current_step = step
 
         # When re-running the whole thing multiple time,

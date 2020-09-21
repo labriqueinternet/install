@@ -3,10 +3,22 @@ $(document).ready(function() {
     function steps_update_view()
     {
         $.getJSON("/status")
-            .done(function(steps) {
+            .done(function(data) {
+
+                steps = data["steps"];
                 steps_update_progress_bar(steps);
                 steps.forEach(function (step_data) { steps_update_list(step_data); });
-		steps.forEach(function (step_data) { if (step_data.status == "failed") { $("#retry").show(); } });
+                steps.forEach(function (step_data) { if (step_data.status == "failed") { $("#retry").show(); } });
+
+                if (! data["active"]) {
+                    $(".progress-bar").removeClass("progress-bar-striped").removeClass("progress-bar-animated").addClass("bg-warning");
+                    $(".fa.fa-cog.fa-spin").removeClass("fa-cog").removeClass("fa-spin").addClass("fa-stop");
+                    $("#retry").show();
+                }
+                else {
+                    $(".progress-bar").addClass("progress-bar-striped").addClass("progress-bar-animated").removeClass("bg-warning");
+                }
+
             })
             .always(function() {
                 setTimeout(steps_update_view, 2000);
@@ -287,7 +299,9 @@ $(document).ready(function() {
     if ($("#install_status").length)
     {
         $("#retry").hide();
-        $("#retry").click($.post("/retry"));
+        $("#retry").click(function() {
+            $.post("/retry");
+        });
 
         $("#debug_mode")[0].checked = false;
         $("#debug_mode").click(function() { steps_toggle_debug_mode() });

@@ -36,9 +36,6 @@ def main():
         ("install_vpnclient", _("Install VPN client")),
         ("configure_vpnclient", _("Configure the VPN")),
         ("install_hotspot", _("Install the WiFi Hotspot")),
-        ("configure_hotspot", _("Configure the WiFi Hotspot")),
-        ("customscript", _("Run the custom script")),
-        ("reboot", _("Reboot the system")),
         ("cleanup", _("Clean things up")),
     ]
 
@@ -63,13 +60,13 @@ def main():
 
 @app.route('/retry', methods = ['POST'])
 def retry():
-    return start_install()
+    return start_install(json.loads(open("./data/install_params.json").read()))
 
 
-def start_install(form_data=None):
+def start_install(form_data={}):
 
-    form_data["enable_vpn"] = True if enable_vpn == "true" else False
-    form_data["enable_hotspot"] = True if enable_hotspot == "true" else False
+    form_data["enable_vpn"] = form_data.get("enable_vpn") in ["true", True]
+    form_data["enable_wifi"] = form_data.get("enable_wifi") in ["true", True]
 
     os.system("mkdir -p ./data/")
     if form_data:
@@ -148,7 +145,10 @@ def status():
             "message": most_recent_info(logs_path) if os.path.exists(logs_path) else None,
         })
 
-    return jsonify(data)
+    status = subprocess.check_output("systemctl is-active internetcube_install.service || true", shell=True).strip().decode("utf-8")
+
+    return jsonify({ "active": status == "active",
+                     "steps": data })
 
 
 @app.route('/debug', methods = ['GET'])
