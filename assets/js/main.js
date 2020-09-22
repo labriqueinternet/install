@@ -1,24 +1,46 @@
 $(document).ready(function() {
 
+    if (window.location.pathname != "/install") {
+        window.location.replace(window.location.origin + "/install");
+    };
+
     function steps_update_view()
     {
-        $.getJSON("/status")
+        $.getJSON(window.location + "/status")
             .done(function(data) {
 
                 steps = data["steps"];
                 steps_update_progress_bar(steps);
                 steps.forEach(function (step_data) { steps_update_list(step_data); });
-                steps.forEach(function (step_data) { if (step_data.status == "failed") { $("#retry").show(); } });
+                failure = false;
+                steps.forEach(function (step_data) { if (step_data.status == "failed") { failure = true; } });
+                completed = true;
+                steps.forEach(function (step_data) { if (step_data.status != "success") { completed = false; } });
 
-                if (! data["active"]) {
-                    $(".progress-bar").removeClass("progress-bar-striped").removeClass("progress-bar-animated").addClass("bg-warning");
-                    $(".fa.fa-cog.fa-spin").removeClass("fa-cog").removeClass("fa-spin").addClass("fa-stop");
+                inactive = (! data["active"]) && (! completed);
+
+                $(".progress-bar").removeClass("progress-bar-striped").removeClass("progress-bar-animated").removeClass("bg-warning").removeClass("bg-danger").removeClass("bg-success");
+
+                if (failure) {
+                    $(".progress-bar").addClass("bg-danger");
+                }
+                else if (inactive) {
+                    $(".progress-bar").addClass("bg-warning");
+                    $("#steps .fa.fa-cog.fa-spin").removeClass("fa-cog").removeClass("fa-spin").addClass("fa-stop");
+                }
+                else if (completed) {
+                    $(".progress-bar").addClass("bg-success");
+                }
+                else {
+                    $(".progress-bar").addClass("progress-bar-striped").addClass("progress-bar-animated");
+                }
+
+                if (failure || inactive) {
                     $("#retry").show();
                 }
                 else {
-                    $(".progress-bar").addClass("progress-bar-striped").addClass("progress-bar-animated").removeClass("bg-warning");
+                    $("#retry").hide();
                 }
-
             })
             .always(function() {
                 setTimeout(steps_update_view, 2000);
@@ -28,7 +50,7 @@ $(document).ready(function() {
     var steps_update_debug_timer;
     function steps_update_debug()
     {
-        $.getJSON("/debug")
+        $.getJSON(window.location + "/debug")
             .done(function(steps) {
                 steps.forEach(function (step_data) {
                     step = $("#step-"+step_data.id)[0];
@@ -283,7 +305,7 @@ $(document).ready(function() {
                 serialized_form.cubefile = $('input[id="cubefile"]').attr("content");
             }
 
-            var xhr = $.post("/", serialized_form);
+            var xhr = $.post(window.location + "/", serialized_form);
             xhr.done(function (data) {
                 window.location.reload();
             })
@@ -300,7 +322,7 @@ $(document).ready(function() {
     {
         $("#retry").hide();
         $("#retry").click(function() {
-            $.post("/retry");
+            $.post(window.location + "/retry");
         });
 
         $("#debug_mode")[0].checked = false;

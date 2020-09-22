@@ -8,11 +8,33 @@ import subprocess
 import os
 
 from time import sleep
-from internetcube_install import steps
+from install_procedure import steps
+
+DYNDNS_DOMAINS = ["nohost.me", "noho.st", "ynh.fr"]
+
+# Copypasta from https://stackoverflow.com/a/36033627
+class PrefixMiddleware(object):
+
+    def __init__(self, app, prefix=''):
+        self.app = app
+        self.prefix = prefix
+
+    def __call__(self, environ, start_response):
+
+        if environ['PATH_INFO'].startswith(self.prefix):
+            environ['PATH_INFO'] = environ['PATH_INFO'][len(self.prefix):]
+            environ['SCRIPT_NAME'] = self.prefix
+            return self.app(environ, start_response)
+        else:
+            start_response('404', [('Content-Type', 'text/plain')])
+            return ["This url does not belong to the app.".encode()]
+
 
 steps = [step.__name__ for step in steps]
 
 app = Flask(__name__, static_folder='assets')
+app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix='/install')
+
 babel = Babel(app)
 
 @babel.localeselector
@@ -23,6 +45,9 @@ def get_locale():
 @app.route('/', methods = ['POST', 'GET'])
 def main():
 
+    if os.path.exists("/etc/yunohost/installed"):
+        return "Yunohost is already installed"
+
     # We need this here because gettext (_) gotta be called when user makes the
     # request to know their language ... (or at least not sure how to do this
     # another way ... we can have a loop but that will probably hide what
@@ -30,13 +55,13 @@ def main():
     # for translation generation)
     # But the consequence is : this gotta be kept in sync with the step list
     steps_with_i18n = [
-        ("upgrade", _("Upgrade the system")),
-        ("postinstall", _("Postinstall Yunohost")),
-        ("firstuser", _("Create first user")),
-        ("install_vpnclient", _("Install VPN client")),
-        ("configure_vpnclient", _("Configure the VPN")),
-        ("install_hotspot", _("Install the WiFi Hotspot")),
-        ("cleanup", _("Clean things up")),
+        ("upgrade", _("System upgrade")),
+        ("postinstall", _("Server initialization")),
+        ("firstuser", _("First user creation")),
+        ("install_vpnclient", _("VPN installation")),
+        ("configure_vpnclient", _("VPN configuration")),
+        ("install_hotspot", _("WiFi Hotspot installation")),
+        ("cleanup", _("Cleaning")),
     ]
 
     translated_steps = [step for step, _ in steps_with_i18n]
@@ -69,13 +94,15 @@ def start_install(form_data={}):
     form_data["enable_wifi"] = form_data.get("enable_wifi") in ["true", True]
 
     os.system("mkdir -p ./data/")
+    os.system("chown root:root ./data/")
+    os.system("chmod o-rwx ./data/")
     if form_data:
         with open("./data/install_params.json", "w") as f:
             f.write(json.dumps(form_data))
 
     os.system("systemctl reset-failed internetcube_install.service &>/dev/null || true ")
     cwd = os.path.dirname(os.path.realpath(__file__))
-    start_status = os.system("systemd-run --unit=internetcube_install %s/venv/bin/python3 %s/internetcube_install.py" % (cwd, cwd))
+    start_status = os.system("systemd-run --unit=internetcube_install %s/venv/bin/python3 %s/install_procedure.py" % (cwd, cwd))
 
     sleep(3)
 
@@ -98,8 +125,7 @@ def validate(form):
         raise Exception(_("It looks like the board is not connected to the internet !?"))
 
     # Dyndns domain is available ?
-    dyndns_domains = ["nohost.me", "noho.st", "ynh.fr"]
-    if any(form["main_domain"].endswith(dyndns_domain) for dyndns_domain in dyndns_domains):
+    if any(form["main_domain"].endswith(dyndns_domain) for dyndns_domain in DYNDNS_DOMAINS):
         try:
             r = requests.get('https://dyndns.yunohost.org/test/' + form["main_domain"], timeout=15)
             assert r.text.endswith("is available")
@@ -186,3 +212,24 @@ def redact_passwords(content):
         content = content.replace(value, "[REDACTED]")
 
     return content
+
+
+#
+# Determine what url should be recommended to the user after installing the
+# server depending on the intallation paramenters
+#
+# (nohost.me     +  VPN  ) -> the domain
+# (        no VPN        ) -> the local IP
+#
+def recommended_way_to_access_server():
+    install_params = json.loads(open("./data/install_params.json").read())
+    local_ips = subprocess.check_output("hostname -I", shell=True).strip().decode("utf-8")
+    local_ip4s = [ip for ip in local_ips.split() if ":" not in ip]
+    local_ip4 = local_ipv4s[0] if local_ip4s else None
+
+    is_dyndns_domain = any(install_params["main_domain"].endswith(dyndns_domain) for dyndns_domain in DYNDNS_DOMAINS)
+
+    if (install_params["enable_vpn"] and is_dyndns_domain) or local_ip4 is None:
+        return install_params["main_domain"]
+    else:
+        return local_ip4

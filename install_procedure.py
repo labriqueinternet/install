@@ -89,13 +89,22 @@ def install_hotspot(install_params):
 @step
 def cleanup(install_params):
 
-    run_cmd("rm /etc/nginx/conf.d/default.d/internetcube.conf")
-    run_cmd("rm /usr/share/yunohost/hooks/conf_regen/99-nginx_internetcube")
-    run_cmd("yunohost tools regen-conf nginx --force")
+    # Update diagnosis results
+    run_cmd("yunohost diagnosis run")
+    run_cmd("yunohost diagnosis show --issues")
 
-    run_cmd("rm /etc/systemd/system/internetcube.service")
-    run_cmd("systemctl daemon-reload")
-    run_cmd("systemctl stop internetcube") # FIXME : add a delay here before doing this ?
+    cmds = [
+        "sleep 10",
+        "echo '{}' > /etc/ssowat/conf.json.persistent",
+        "rm /etc/nginx/conf.d/default.d/internetcube.conf",
+        "rm /etc/systemd/system/internetcube.service",
+        "systemctl reload nginx",
+        "systemctl daemon-reload",
+        "systemctl stop internetcube",
+    ]
+
+    open("/tmp/internetcube-cleanup", "w").write("rm /tmp/internetcube-cleanup;\n" + "\n".join(cmds))
+    os.system("systemd-run --scope bash /tmp/internetcube-cleanup &")
 
 # ===============================================================
 # ===============================================================
