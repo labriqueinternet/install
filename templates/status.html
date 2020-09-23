@@ -6,7 +6,7 @@
 
     <div class="mb-5 col-sm-12 col-md-8 col-lg-6">
 
-        <div id="progress" class="progress mb-3">
+        <div id="progress" class="progress mb-3 mt-5">
             <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
 
@@ -45,54 +45,44 @@
                     <i class="fa fa-fw fa-check-circle text-success"></i> {{ _("Installation complete !") }}
                 </h3>
 
+                {% if install_params.enable_wifi %}
                 <div class="card mt-3">
                     <div class="card-body">
                         <h4 class="card-title"><i class="fa fa-fw fa-wifi mr-2"></i>{{ _("You have a new WiFi !") }}</h4>
 
-                        <p class="card-text">FIXME : add wifi ssid (only if the option was enabled during install)</p>
+                        <p class="card-text">
+                        {{ _("Your new wifi is called <span style='font-weight:bold; font-family:monospace;'>%(wifi_ssid)s</span> and should now show up on your devices. When you're connected to it, your traffic is automatically encrypted through the VPN tunnel.", wifi_ssid=install_params.wifi_ssid) }}
+                        </p>
                     </div>
                 </div>
+                {% endif %}
 
                 <div class="card mt-3">
                     <div class="card-body">
                         <h4 class="card-title"><i class="fa fa-fw fa-wrench mr-2"></i>{{ _("Checkout the admin interface") }}</h4>
 
-                        FIXME : add link to the admin interface (depending on (nohost.me + vpn), domain, global IP, local IP, ...)
-                        <i class="fa fa-fw fa-stethoscope mr-2"></i>
+                        <p class="card-text">
+                        {{ _("This is where you'll be able to add users, install applications and manage your server !") }}
+                        </p>
+                        <p class="card-text">
+                        {{ _("The diagnosis section will help you making sure that everything is running smoothly. You may need to configure port forwarding or DNS records (depending on your installation choices) for your server to be fully functional.") }}
+                        </p>
 
-                        <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a>
-                    </div>
-                </div>
-<!--
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <h4 class="card-title"><i class="fa fa-fw fa-exchange mr-2"></i>{{ _("Configure port forwarding on your router") }}</h4>
-                        FIXME : only if no VPN enabled
-
-                        <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a>
+                        <a target="_blank" href="https://{{ install_params.request_host }}/yunohost/admin" class="card-link"><i class="fa fa-fw fa-key"></i> {{ _("Go to the admin interface") }}</a>
                     </div>
                 </div>
 
-
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <h4 class="card-title"><i class="fa fa-fw fa-globe mr-2"></i>{{ _("Configure the DNS records for your server") }}</h4>
-                        FIXME : only if not nohost.me / noho.st / ynh.fr ...
-
-                        <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a>
-                    </div>
-                </div>
--->
                 <div class="card mt-3">
                     <div class="card-body">
                         <h4 class="card-title"><i class="fa fa-fw fa-home mr-2"></i>{{ _("Your very own digital home") }}</h4>
-                        FIXME : only if no VPN enabled
 
-                        <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a>
+                        <p class="card-text">
+                        {{ _("Once your setup is fully-functional, you may access the user portal. This is where you can access applications.") }}
+                        </p>
+
+                        <a target="_blank" href="https://{{ install_params.main_domain }}/yunohost/sso" class="card-link"><i class="fa fa-fw fa-user"></i> {{ _("Go to the user portal") }}</a>
+                        <br>
+                        <a target="_blank" href="https://yunohost.org/#/email_configure_client" class="card-link"><i class="fa fa-fw fa-envelope"></i> {{ _("Learn how to configure email") }}</a>
                     </div>
                 </div>
 

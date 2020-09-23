@@ -1,6 +1,6 @@
 
 ```
-apt install python3-venv -y
+apt install python3-venv avahi-utils -y
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -16,4 +16,6 @@ systemctl reload nginx
 cp deploy/internetcube.service /etc/systemd/system/
 systemctl daemon-reload
 systemctl enable --now internetcube
+
+touch /etc/yunohost/internetcube_to_be_installed
 ```

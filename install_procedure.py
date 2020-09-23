@@ -1,3 +1,4 @@
+import time
 import os
 import json
 import subprocess
@@ -92,19 +93,22 @@ def cleanup(install_params):
     # Update diagnosis results
     run_cmd("yunohost diagnosis run")
     run_cmd("yunohost diagnosis show --issues")
+    run_cmd("rm /etc/yunohost/internetcube_to_be_installed")
 
     cmds = [
-        "sleep 10",
+        "sleep 15",
         "echo '{}' > /etc/ssowat/conf.json.persistent",
-        "rm /etc/nginx/conf.d/default.d/internetcube.conf",
-        "rm /etc/systemd/system/internetcube.service",
+        "rm /etc/nginx/conf.d/default.d/internetcube_install.conf",
         "systemctl reload nginx",
+        "rm /etc/systemd/system/internetcube.service",
         "systemctl daemon-reload",
-        "systemctl stop internetcube",
+        "systemctl disable --now internetcube",
     ]
 
     open("/tmp/internetcube-cleanup", "w").write("rm /tmp/internetcube-cleanup;\n" + "\n".join(cmds))
     os.system("systemd-run --scope bash /tmp/internetcube-cleanup &")
+
+    time.sleep(5)
 
 # ===============================================================
 # ===============================================================

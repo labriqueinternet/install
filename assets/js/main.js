@@ -4,6 +4,9 @@ $(document).ready(function() {
         window.location.replace(window.location.origin + "/install");
     };
 
+    $("#completed-1").hide();
+    $("#completed-2").hide();
+
     function steps_update_view()
     {
         $.getJSON(window.location + "/status")
@@ -38,11 +41,18 @@ $(document).ready(function() {
                 if (failure || inactive) {
                     $("#retry").show();
                 }
+                else if (completed) {
+                    $("#steps").hide();
+                    $("#footer").hide();
+                    $("#completed-1").show();
+                    setTimeout(function () { $("#progress").hide(); $("#completed-1").hide(); $("#completed-2").show(); }, 5000);
+                }
                 else {
                     $("#retry").hide();
+                    setTimeout(steps_update_view, 2000);
                 }
             })
-            .always(function() {
+            .fail(function() {
                 setTimeout(steps_update_view, 2000);
             });
     };
@@ -323,6 +333,7 @@ $(document).ready(function() {
         $("#retry").hide();
         $("#retry").click(function() {
             $.post(window.location + "/retry");
+            setTimeout(steps_update_view, 2000);
         });
 
         $("#debug_mode")[0].checked = false;

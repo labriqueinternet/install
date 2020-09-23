@@ -45,8 +45,8 @@ def get_locale():
 @app.route('/', methods = ['POST', 'GET'])
 def main():
 
-    if os.path.exists("/etc/yunohost/installed"):
-        return "Yunohost is already installed"
+    if not os.path.exists("/etc/yunohost/internetcube_to_be_installed"):
+        return "The InternetCube is already installed"
 
     # We need this here because gettext (_) gotta be called when user makes the
     # request to know their language ... (or at least not sure how to do this
@@ -71,7 +71,8 @@ def main():
         if not os.path.exists("./data/install_params.json"):
             return render_template('form.html')
         else:
-            return render_template('status.html', steps=steps_with_i18n, status=status)
+            install_params = json.loads(open("./data/install_params.json").read())
+            return render_template('status.html', steps=steps_with_i18n, install_params=install_params)
 
     if request.method == 'POST':
         form_data = {k:v for k, v in request.form.items()}
@@ -92,6 +93,8 @@ def start_install(form_data={}):
 
     form_data["enable_vpn"] = form_data.get("enable_vpn") in ["true", True]
     form_data["enable_wifi"] = form_data.get("enable_wifi") in ["true", True]
+    form_data["use_dyndns_domain"] = any(form["main_domain"].endswith("."+dyndns_domain) for dyndns_domain in DYNDNS_DOMAINS)
+    form_data["request_host"] = request.host
 
     os.system("mkdir -p ./data/")
     os.system("chown root:root ./data/")
@@ -125,7 +128,7 @@ def validate(form):
         raise Exception(_("It looks like the board is not connected to the internet !?"))
 
     # Dyndns domain is available ?
-    if any(form["main_domain"].endswith(dyndns_domain) for dyndns_domain in DYNDNS_DOMAINS):
+    if any(form["main_domain"].endswith("."+dyndns_domain) for dyndns_domain in DYNDNS_DOMAINS):
         try:
             r = requests.get('https://dyndns.yunohost.org/test/' + form["main_domain"], timeout=15)
             assert r.text.endswith("is available")
@@ -214,22 +217,10 @@ def redact_passwords(content):
     return content
 
 
-#
-# Determine what url should be recommended to the user after installing the
-# server depending on the intallation paramenters
-#
-# (nohost.me     +  VPN  ) -> the domain
-# (        no VPN        ) -> the local IP
-#
-def recommended_way_to_access_server():
-    install_params = json.loads(open("./data/install_params.json").read())
+def local_ipv4():
+
     local_ips = subprocess.check_output("hostname -I", shell=True).strip().decode("utf-8")
     local_ip4s = [ip for ip in local_ips.split() if ":" not in ip]
     local_ip4 = local_ipv4s[0] if local_ip4s else None
 
-    is_dyndns_domain = any(install_params["main_domain"].endswith(dyndns_domain) for dyndns_domain in DYNDNS_DOMAINS)
-
-    if (install_params["enable_vpn"] and is_dyndns_domain) or local_ip4 is None:
-        return install_params["main_domain"]
-    else:
-        return local_ip4
+    return local_ipv4
