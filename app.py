@@ -93,7 +93,7 @@ def start_install(form_data={}):
 
     form_data["enable_vpn"] = form_data.get("enable_vpn") in ["true", True]
     form_data["enable_wifi"] = form_data.get("enable_wifi") in ["true", True]
-    form_data["use_dyndns_domain"] = any(form["main_domain"].endswith("."+dyndns_domain) for dyndns_domain in DYNDNS_DOMAINS)
+    form_data["use_dyndns_domain"] = any(form_data.get("main_domain").endswith("."+dyndns_domain) for dyndns_domain in DYNDNS_DOMAINS)
     form_data["request_host"] = request.host
 
     os.system("mkdir -p ./data/")

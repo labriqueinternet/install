@@ -29,7 +29,7 @@ $(document).ready(function() {
                 }
                 else if (inactive) {
                     $(".progress-bar").addClass("bg-warning");
-                    $("#steps .fa.fa-cog.fa-spin").removeClass("fa-cog").removeClass("fa-spin").addClass("fa-stop");
+                    $("#steps .fa.fa-cog").removeClass("fa-cog").removeClass("fa-spin").addClass("fa-stop");
                 }
                 else if (completed) {
                     $(".progress-bar").addClass("bg-success");
@@ -53,6 +53,7 @@ $(document).ready(function() {
                 }
             })
             .fail(function() {
+                $("#steps .fa.fa-cog").removeClass("fa-cog").removeClass("fa-spin").addClass("fa-question");
                 setTimeout(steps_update_view, 2000);
             });
     };
