@@ -3,7 +3,7 @@
 {% block main %}
 <form id="install_form" action="/" method="POST" novalidate class="mt-5">
 <div class="row justify-content-center">
-    <div class="col-8 mb-3">
+    <div class="col-lg-8 col-sm-10 mb-3">
         <div class="card">
           <h4 class="card-header">{{ _("Server configuration") }}</h4>
           <div class="card-body">
@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div class="col-8 mb-3">
+    <div class="col-lg-8 col-sm-10">
         <div class="card">
           <h4 class="card-header">{{ _("First user (administrator)") }}</h4>
           <div class="card-body">
@@ -67,7 +67,7 @@
         </div>
     </div>
 
-    <div class="col-8 mb-3">
+    <div class="col-lg-8 col-sm-10 mb-3">
         <div id="vpn" class="card">
           <h4 class="card-header">
               <div class="custom-control custom-switch">
@@ -93,7 +93,7 @@
         </div>
     </div>
 
-    <div class="col-8 mb-3">
+    <div class="col-lg-8 col-sm-10 mb-3">
         <div id="wifi" class="card">
             <h4 class="card-header">
                 <div class="custom-control custom-switch">
@@ -133,7 +133,7 @@
         </div>
     </div>
 
-    <div class="col-8 mb-5 text-center">
+    <div class="col-lg-8 col-sm-10 mb-5 text-center">
         <div id="submit_error" class="text-danger mb-2" style="display: none;"></div>
         <button type="submit" class="btn btn-primary"><i class="fa fa-rocket" aria-hidden="true"></i> {{ _("Let's go!") }}</button> 
     </div>

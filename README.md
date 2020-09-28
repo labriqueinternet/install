@@ -1,8 +1,9 @@
 
 ```
-apt install python3-venv avahi-utils -y
+apt install python3-venv avahi-utils python3-setuptools python3-wheel -y
 python3 -m venv venv
 source venv/bin/activate
+pip install wheel
 pip install -r requirements.txt
 
 cp deploy/avahi-alias.service /etc/systemd/system/avahi-alias@.service
