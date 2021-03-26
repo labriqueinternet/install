@@ -40,3 +40,7 @@ pre.debug {
     padding-bottom: 1px;
     max-height: 30em;
 }
+
+.alert-info {
+    background-color: #eaf6f9;
+}

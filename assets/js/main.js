@@ -276,8 +276,11 @@ $(document).ready(function() {
         $("#enable_vpn")[0].checked = true;
         $("#enable_wifi")[0].checked = true;
 
-        $("#enable_vpn").click(function() { form_update_optional_section("vpn") });
+        $("#enable_vpn").click(function() {  form_update_optional_section("vpn") });
         $("#enable_wifi").click(function() { form_update_optional_section("wifi") });
+
+        form_update_optional_section("vpn");
+        form_update_optional_section("wifi");
 
         $(".invalid-feedback").hide();
         $(".invalid-feedback.default").css("display", "");

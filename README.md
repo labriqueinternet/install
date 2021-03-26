@@ -1,5 +1,3 @@
 
-```
-cd deploy/
-source deploy.sh
+source deploy/deploy.sh
 ```

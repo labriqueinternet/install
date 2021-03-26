@@ -131,21 +131,27 @@ def validate(form):
     if any(form["main_domain"].endswith("."+dyndns_domain) for dyndns_domain in DYNDNS_DOMAINS):
         try:
             r = requests.get('https://dyndns.yunohost.org/test/' + form["main_domain"], timeout=15)
-            assert r.text.endswith("is available")
+            assert "is available" in r.text.strip()
         except Exception as e:
             raise Exception(_("It looks like domain %(domain)s is not available.", domain=form["main_domain"]))
 
     # .cube format ?
-    if form["enable_vpn"]:
+    if form.get("enable_vpn") in ["true", True]:
         try:
             cube_config = json.loads(form["cubefile"])
         except Exception as e:
-            raise Exception(_("Could not load this file as json ... Is it a valid .cube file ?"))
+            raise Exception(_("Could not load this file as json ... Is it a valid .cube file ?" + str(form["enable_vpn"])))
 
         # TODO : refine this ?
         expected_fields = ["server_name", "server_port", "crt_server_ca", "dns0"]
         if not all(field in cube_config for field in expected_fields):
             raise Exception(_("This cube file does not look valid because some fields are missing ?"))
+
+    if form.get("enable_wifi") in ["true", True]:
+        try:
+            subprocess.check_call("/sbin/iw dev | grep -q Interface", shell=True)
+        except Exception as e:
+            raise Exception(_("The hotspot option can't enabled because it looks like no WiFi interface is available on the system ... did you forget to plug the antenna ?"))
 
     return True
 

@@ -6,10 +6,11 @@
     <div class="col-lg-8 col-sm-10 mb-3">
         <div class="card">
           <h4 class="card-header">{{ _("Server configuration") }}</h4>
+          <div class="alert alert-info card-header">
+              <i class="fa fa-info-circle" aria-hidden="true"></i>
+              {{ _("This is the domain that will be used to name and reach your internet cube. If you do not already own a domain name, you can pick a free domain ending with .nohost.me, .noho.st or .ynh.fr. It will automatically be configured during the setup.") }}
+          </div>
           <div class="card-body">
-              <div class="alert alert-info">
-                  {{ _("If you do not have a domain name, you can choose one ending by nohost.me or noho.st (the availability will be automatically checked).") }}
-              </div>
               <div class="form-group row">
                   <label for="main_domain" class="col-3 col-form-label">{{ _("Main domain") }}</label>
                   <div class="col-9">
@@ -23,7 +24,7 @@
         </div>
     </div>
 
-    <div class="col-lg-8 col-sm-10">
+    <div class="col-lg-8 col-sm-10 mb-3">
         <div class="card">
           <h4 class="card-header">{{ _("First user (administrator)") }}</h4>
           <div class="card-body">
@@ -75,6 +76,10 @@
                   <label class="custom-control-label" for="enable_vpn">{{ _("VPN configuration") }}</label>
               </div>
           </h4>
+          <div class="collapse alert alert-info card-header">
+              <i class="fa fa-info-circle" aria-hidden="true"></i>
+              {{ _("Using a VPN allows for easier setup (no need to manually forward ports), bypasses any possible restrictions from your commercial ISP (such as blocking outgoing port 25 for emails).") }}
+          </div>
           <div class="collapse show card-body">
               <div class="form-group row">
                   <label for="cubefile" class="col-3 col-form-label">{{ _(".cube file") }}</label>
@@ -101,6 +106,10 @@
                     <label class="custom-control-label" for="enable_wifi">{{ _("Wifi Hotspot configuration") }}</label>
                 </div>
             </h4>
+            <div class="collapse alert alert-info card-header">
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                {{ _("If a VPN is configured, clients connected to the hotspot will have their traffic routed through the VPN, providing them with IPv6 and protecting their connection against censorship/spying from your commercial ISP.") }}
+            </div>
           <div class="collapse show card-body">
               <div class="form-group row">
                   <label for="wifi_ssid" class="col-3 col-form-label">{{ _("Nom (SSID)") }}</label>
