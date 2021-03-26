@@ -18,7 +18,7 @@ $(document).ready(function() {
                 failure = false;
                 steps.forEach(function (step_data) { if (step_data.status == "failed") { failure = true; } });
                 completed = true;
-                steps.forEach(function (step_data) { if (step_data.status != "success") { completed = false; } });
+                steps.forEach(function (step_data) { if ((step_data.status != "success") && (step_data.status != "skipped")) { completed = false; } });
 
                 inactive = (! data["active"]) && (! completed);
 
