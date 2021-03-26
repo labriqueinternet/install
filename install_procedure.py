@@ -25,7 +25,7 @@ def upgrade(install_params):
 @step
 def postinstall(install_params):
 
-    run_cmd("yunohost tools postinstall -d {main_domain} -p {password}".format(**install_params))
+    run_cmd("yunohost tools postinstall -d '{main_domain}' -p '{password}'".format(**install_params))
 
 @step
 def firstuser(install_params):
@@ -36,11 +36,11 @@ def firstuser(install_params):
         install_params["firstname"] = install_params["fullname"]
         install_params["lastname"] = "FIXMEFIXME" # FIXME
 
-    run_cmd("yunohost user create {username} -q 0 "
-            "-f {firstname} "
-            "-l {lastname} "
-            "-m {username}@{main_domain} "
-            "-p {password}"
+    run_cmd("yunohost user create '{username}' -q 0 "
+            "-f '{firstname}' "
+            "-l '{lastname}' "
+            "-m '{username}@{main_domain}' "
+            "-p '{password}'"
             .format(**install_params))
 
 @step
@@ -49,7 +49,7 @@ def install_vpnclient(install_params):
         return "skipped"
 
     main_domain_esc = requote_uri(install_params["main_domain"])
-    run_cmd("yunohost app install vpnclient --force --args \"domain=%s&path=/vpnadmin\"" % main_domain_esc)
+    run_cmd("yunohost app install vpnclient --force --args 'domain=%s&path=/vpnadmin'" % main_domain_esc)
 
 
 @step
@@ -57,14 +57,14 @@ def configure_vpnclient(install_params):
     if not install_params["enable_vpn"]:
         return "skipped"
 
-    run_cmd("yunohost app addaccess vpnclient -u {username}".format(**install_params))
+    run_cmd("yunohost app addaccess vpnclient -u '{username}'".format(**install_params))
     run_cmd("yunohost app setting vpnclient service_enabled -v 1")
 
     open("/tmp/config.cube", "w").write(install_params["cubefile"])
     os.system("chown root:root /tmp/config.cube")
     os.system("chmod 600 /tmp/config.cube")
 
-    run_cmd("ynh-vpnclient-loadcubefile.sh -u {username} -p {password} -c /tmp/config.cube".format(**install_params))
+    run_cmd("ynh-vpnclient-loadcubefile.sh -u '{username}' -p '{password}' -c /tmp/config.cube".format(**install_params))
 
 @step
 def install_hotspot(install_params):
@@ -75,12 +75,12 @@ def install_hotspot(install_params):
     wifi_ssid_esc = requote_uri(install_params["wifi_ssid"])
     wifi_password_esc = requote_uri(install_params["wifi_password"])
 
-    run_cmd("yunohost app install hotspot --force --args \""
+    run_cmd("yunohost app install hotspot --force --args '"
             "domain={main_domain_esc}"
             "&path=/wifiadmin"
             "&wifi_ssid={wifi_ssid_esc}"
             "&wifi_passphrase={wifi_password_esc}"
-            "&firmware_nonfree=no\""
+            "&firmware_nonfree=no'"
             .format(main_domain_esc=main_domain_esc,
                     wifi_ssid_esc=wifi_ssid_esc,
                     wifi_password_esc=wifi_password_esc))
