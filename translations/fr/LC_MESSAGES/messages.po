@@ -136,7 +136,7 @@ msgstr "Nom complet"
 
 #: templates/form.html:43
 msgid "Sasha Doe"
-msgstr "Saha Dupont"
+msgstr "Sasha Dupont"
 
 #: templates/form.html:47 templates/form.html:121
 msgid "Password"
