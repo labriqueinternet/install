@@ -39,7 +39,7 @@ def firstuser(install_params):
     run_cmd("yunohost user create '{username}' -q 0 "
             "-f '{firstname}' "
             "-l '{lastname}' "
-            "-m '{username}@{main_domain}' "
+            "-d '{main_domain}' "
             "-p '{password}'"
             .format(**install_params))
 
