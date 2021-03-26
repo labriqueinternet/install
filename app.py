@@ -11,6 +11,7 @@ from time import sleep
 from install_procedure import steps
 
 DYNDNS_DOMAINS = ["nohost.me", "noho.st", "ynh.fr"]
+AVAILABLE_LANGUAGES = ["en"] + os.listdir("translations")
 
 # Copypasta from https://stackoverflow.com/a/36033627
 class PrefixMiddleware(object):
@@ -39,7 +40,10 @@ babel = Babel(app)
 
 @babel.localeselector
 def get_locale():
-    return "fr"
+    # try to guess the language from the user accept
+    # header the browser transmits.  We support de/fr/en in this
+    # example.  The best match wins.
+    return request.accept_languages.best_match(AVAILABLE_LANGUAGES)
 
 
 @app.route('/', methods = ['POST', 'GET'])
