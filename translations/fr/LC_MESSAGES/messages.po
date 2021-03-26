@@ -1,0 +1,290 @@
+# French translations for PROJECT.
+# Copyright (C) 2021 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2021-03-26 18:53+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: app.py:58
+msgid "System upgrade"
+msgstr "Mise à jour du système"
+
+#: app.py:59
+msgid "Server initialization"
+msgstr "Initialisation du serveur"
+
+#: app.py:60
+msgid "First user creation"
+msgstr "Création du première utilisateur.ice"
+
+#: app.py:61
+msgid "VPN installation"
+msgstr "Installation du VPN"
+
+#: app.py:62 templates/form.html:76
+msgid "VPN configuration"
+msgstr "Configuration du VPN"
+
+#: app.py:63
+msgid "WiFi Hotspot installation"
+msgstr "Installation du hotspot WiFi"
+
+#: app.py:64
+msgid "Cleaning"
+msgstr "Nettoyage"
+
+#: app.py:128
+msgid "It looks like the board is not connected to the internet !?"
+msgstr "Il semble que la carte ne soit pas connecté à Internet ?!"
+
+#: app.py:136
+#, python-format
+msgid "It looks like domain %(domain)s is not available."
+msgstr "Le domaine %(domain)s ne semble pas disponible."
+
+#: app.py:143 templates/form.html:93
+msgid "Could not load this file as json ... Is it a valid .cube file ?"
+msgstr "Échec du chargement du fichier json ... Est-ce un fichier .cube valide ?"
+
+#: app.py:148
+msgid "This cube file does not look valid because some fields are missing ?"
+msgstr ""
+"Le fichier cube ne semble pas être valide car certains champs sont "
+"manquants ?"
+
+#: app.py:154
+msgid ""
+"The hotspot option can't enabled because it looks like no WiFi interface "
+"is available on the system ... did you forget to plug the antenna ?"
+msgstr ""
+"L'option hotspot ne peut pas être activée car il semble qu'il n'y ai pas "
+"d'interface WiFi disponible sur le système ... Auriez-vous oublié de "
+"brancher l'antenne ?"
+
+#: templates/base.html:5
+msgid "Internet Cube installation"
+msgstr "Installation de la Brique Internet"
+
+#: templates/base.html:18
+msgid "Înternet Cube installation"
+msgstr "Installation de la Brique Înternet"
+
+#: templates/form.html:8
+msgid "Server configuration"
+msgstr "Configuration du serveur"
+
+#: templates/form.html:11
+msgid ""
+"This is the domain that will be used to name and reach your internet "
+"cube. If you do not already own a domain name, you can pick a free domain"
+" ending with .nohost.me, .noho.st or .ynh.fr. It will automatically be "
+"configured during the setup."
+msgstr ""
+"Il s'agit du domaine qui sera utilisé pour nommer et accéder à votre "
+"brique internet. Si vous ne possédez pas de nom de domaine, vous pouvez "
+"utiliser un domaine gratuit se terminant en .nohost.me, .noho.st ou "
+".ynh.fr. Il sera automatiquement configuré pendant l'installation."
+
+#: templates/form.html:15
+msgid "Main domain"
+msgstr "Domaine principal"
+
+#: templates/form.html:17
+msgid "myserver.nohost.me"
+msgstr "monserveur.nohost.me"
+
+#: templates/form.html:19
+msgid "Please specify a valid domain"
+msgstr "Merci de spécifier un domaine valide."
+
+#: templates/form.html:29
+msgid "First user (administrator)"
+msgstr "Premier utilisateur.ice (admin)"
+
+#: templates/form.html:32
+msgid "Username"
+msgstr "Identifiant"
+
+#: templates/form.html:34
+msgid "sasha"
+msgstr "sasha"
+
+#: templates/form.html:36
+msgid ""
+"Please specify a valid username with at least three characters (only "
+"lowercase, numbers or _)"
+msgstr ""
+"Merci de spécifier un identifiant valide avec au moins trois caractères "
+"(uniquement minuscules, chiffres ou _)"
+
+#: templates/form.html:41
+msgid "Full name"
+msgstr "Nom complet"
+
+#: templates/form.html:43
+msgid "Sasha Doe"
+msgstr "Saha Dupont"
+
+#: templates/form.html:47 templates/form.html:121
+msgid "Password"
+msgstr "Mot de passe"
+
+#: templates/form.html:51 templates/form.html:60 templates/form.html:125
+#: templates/form.html:134
+msgid "Passwords must be at least 8 characters"
+msgstr "Les mots de passent doivent contenir au moins 8 caractères"
+
+#: templates/form.html:56 templates/form.html:130
+msgid "Password (repeat)"
+msgstr "Mot de passe (confirmation)"
+
+#: templates/form.html:63 templates/form.html:137
+msgid "Passwords do not match"
+msgstr "Les mots de passe ne correspondent pas"
+
+#: templates/form.html:81
+msgid ""
+"Using a VPN allows for easier setup (no need to manually forward ports), "
+"bypasses any possible restrictions from your commercial ISP (such as "
+"blocking outgoing port 25 for emails)."
+msgstr ""
+"Utiliser un VPN permet une installation simplifiée (pas besoin de "
+"manuellement rediriger les ports), contourne les possibles restrictions "
+"de votre FAI commercial (telles que le blocage du port 25 sortant pour "
+"les emails)"
+
+#: templates/form.html:85
+msgid ".cube file"
+msgstr "Fichier .cube"
+
+#: templates/form.html:88
+msgid "Choose file"
+msgstr "Choisir un fichier"
+
+#: templates/form.html:90
+msgid "You must provide a valid .cube file to enable the VPN"
+msgstr "Il faut fournir un fichier .cube valide pour activer le VPN"
+
+#: templates/form.html:106
+msgid "Wifi Hotspot configuration"
+msgstr "Configuration du Hotspot WiFi"
+
+#: templates/form.html:111
+msgid ""
+"If a VPN is configured, clients connected to the hotspot will have their "
+"traffic routed through the VPN, providing them with IPv6 and protecting "
+"their connection against censorship/spying from your commercial ISP."
+msgstr ""
+"Si un VPN est configuré, le traffic internet des clients connectés au "
+"hotspot sera routé via le VPN, leur fournissant ainsi une IPv6 et les "
+"protégeants de la censure/espionnage des FAI commerciaux."
+
+#: templates/form.html:115
+msgid "Name (SSID)"
+msgstr "Nom (SSID)"
+
+#: templates/form.html:117
+msgid "myNeutralNetwork"
+msgstr "monReseauNeutre"
+
+#: templates/form.html:147
+msgid "Let's go!"
+msgstr "Allons-y"
+
+#: templates/status.html:24
+msgid "Retry"
+msgstr "Réessayer"
+
+#: templates/status.html:28
+msgid "Debug mode"
+msgstr "Mode debug"
+
+#: templates/status.html:37
+msgid "Please wait just a few more seconds while the installation completes..."
+msgstr ""
+"Merci de patienter juste quelques secondes pendant que l'installation se "
+"termine..."
+
+#: templates/status.html:45
+msgid "Installation complete !"
+msgstr "Installation terminée !"
+
+#: templates/status.html:51
+msgid "You have a new WiFi !"
+msgstr "Vous avez un nouveau WiFi !"
+
+#: templates/status.html:54
+#, python-format
+msgid ""
+"Your new wifi is called <span style='font-weight:bold; font-"
+"family:monospace;'>%(wifi_ssid)s</span> and should now show up on your "
+"devices. When you're connected to it, your traffic is automatically "
+"encrypted through the VPN tunnel."
+msgstr ""
+"Votre nouveau wifi se nomme <span style='font-weight:bold; font-"
+"family:monospace;'>%(wifi_ssid)s</span> et devrait appaître sur vos "
+"dispositifs. Lorsque vous êtes connecté dessus, le traffic est "
+"automatiquement chiffré à travers le tunnel VPN."
+
+#: templates/status.html:62
+msgid "Checkout the admin interface"
+msgstr "Jetez un oeil à l'interface d'admin"
+
+#: templates/status.html:65
+msgid ""
+"This is where you'll be able to add users, install applications and "
+"manage your server !"
+msgstr ""
+"C'est l'endroit où vous pouvez rajouter des utilisateur.ices, installer "
+"des applications et gérer votre serveur !"
+
+#: templates/status.html:68
+msgid ""
+"The diagnosis section will help you making sure that everything is "
+"running smoothly. You may need to configure port forwarding or DNS "
+"records (depending on your installation choices) for your server to be "
+"fully functional."
+msgstr ""
+"La section diagnostique permet de s'assurer que tout fonctionne bien. En "
+"fonction de vos choix d'installation, il vous faudra peut-être configurer"
+" les redirections de port et les enregistrements DNS pour que votre "
+"serveur soit complètement fonctionnel."
+
+#: templates/status.html:71
+msgid "Go to the admin interface"
+msgstr "Aller sur l'interface d'administration"
+
+#: templates/status.html:77
+msgid "Your very own digital home"
+msgstr "Votre nouveau chez-vous numérique"
+
+#: templates/status.html:80
+msgid ""
+"Once your setup is fully-functional, you may access the user portal. This"
+" is where you can access applications."
+msgstr ""
+"Une fois votre serveur correctement configuré, vous pourrez accéder au "
+"portail utilisateur.ice. Il s'agit de l'endroit depuis lequel vous pouvez"
+" accéder aux applications."
+
+#: templates/status.html:83
+msgid "Go to the user portal"
+msgstr "Aller sur le portail utilisateur.ice"
+
+#: templates/status.html:85
+msgid "Learn how to configure email"
+msgstr "Apprendre à configurer les emails"
+
