@@ -152,10 +152,14 @@ def validate(form):
             raise Exception(_("This cube file does not look valid because some fields are missing ?"))
 
     if form.get("enable_wifi") in ["true", True]:
-        try:
-            subprocess.check_call("/sbin/iw dev | grep -q Interface", shell=True)
-        except Exception as e:
-            raise Exception(_("The hotspot option can't enabled because it looks like no WiFi interface is available on the system ... did you forget to plug the antenna ?"))
+        # This doesnt work properly because of missing drivers
+        # so the interface doesn't show up
+        # Though we could maybe tweak something with lsusb (but that doesn't cover non-usb devices)
+        pass
+        #try:
+        #    subprocess.check_call("/sbin/iw dev | grep -q Interface", shell=True)
+        #except Exception as e:
+        #    raise Exception(_("The hotspot option can't enabled because it looks like no WiFi interface is available on the system ... did you forget to plug the antenna ?"))
 
     return True
 
