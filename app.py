@@ -157,6 +157,15 @@ def validate(form):
         if not all(field in cube_config for field in expected_fields):
             raise Exception(_("This cube file does not look valid because some fields are missing ?"))
 
+        if cube_config.get("crt_client"):
+            read, write = os.pipe();
+            os.write(write, cube_config['crt_client'].replace('|', '\n').encode());
+            os.close(write);
+            try:
+                subprocess.check_call('openssl x509 -noout -checkend 0 >/dev/null', shell=True, stdin=read)
+            except Exception as e:
+                raise Exception(_("It looks like the user certificate in the .cube file is already expired ?!"))
+
     if form.get("enable_wifi") in ["true", True]:
         # This doesnt work properly because of missing drivers
         # so the interface doesn't show up
