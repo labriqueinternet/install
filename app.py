@@ -88,9 +88,15 @@ def main():
         return start_install(form_data)
 
 
-@app.route('/retry', methods = ['POST'])
+@app.route('/retry', methods=['POST'])
 def retry():
     return start_install(json.loads(open("./data/install_params.json").read()))
+
+
+@app.route('/fullreset', methods=['POST'])
+def fullreset():
+    cwd = os.path.dirname(os.path.realpath(__file__))
+    return os.system("bash %s/deploy/fullreset.sh" % cwd) == 0
 
 
 def start_install(form_data={}):

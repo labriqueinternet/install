@@ -40,6 +40,9 @@ $(document).ready(function() {
 
                 if (failure || inactive) {
                     $("#retry").show();
+                    $("#fullreset").show();
+                    $("#retry").removeClass("disabled");
+                    $("#fullreset").removeClass("disabled");
                 }
                 else if (completed) {
                     $("#steps").hide();
@@ -49,6 +52,7 @@ $(document).ready(function() {
                 }
                 else {
                     $("#retry").hide();
+                    $("#fullreset").hide();
                     setTimeout(steps_update_view, 2000);
                 }
             })
@@ -336,8 +340,23 @@ $(document).ready(function() {
     {
         $("#retry").hide();
         $("#retry").click(function() {
+            $("#retry").addClass("disabled");
+            $("#fullreset").addClass("disabled");
             $.post(window.location + "/retry");
             setTimeout(steps_update_view, 2000);
+        });
+
+        $("#fullreset").hide();
+        $("#fullreset-wait").hide();
+        $("#fullreset").click(function() {
+            $("#retry").addClass("disabled");
+            $("#fullreset").addClass("disabled");
+            $("#fullreset .fa").addClass("fa-spin");
+            $("#fullreset-wait").show();
+            xhr = $.post(window.location + "/fullreset");
+            xhr.always(function () {
+                window.location.reload();
+            });
         });
 
         $("#debug_mode")[0].checked = false;
