@@ -43,6 +43,7 @@ $(document).ready(function() {
                     $("#fullreset").show();
                     $("#retry").removeClass("disabled");
                     $("#fullreset").removeClass("disabled");
+                    if (inactive) { setTimeout(steps_update_view, 5000); } 
                 }
                 else if (completed) {
                     $("#steps").hide();
