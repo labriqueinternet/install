@@ -4,6 +4,12 @@ This is the small web UI to install an internet cube
 
 It is injected in the yunohost/internetcube images [here](https://github.com/YunoHost/arm-images/blob/yunohost/userpatches/customize-image.sh)
 
+### Screenshots
+
+![](./doc/install1.png)
+
+![](./doc/install2.png)
+
 ### Development
 
 Set up a Yunohost LXC, then:
