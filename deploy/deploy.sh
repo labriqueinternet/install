@@ -27,6 +27,7 @@ echo "internetcube" > /etc/yunohost/mdns.aliases
 echo "briqueinternet" >> /etc/yunohost/mdns.aliases
 
 bash /usr/share/yunohost/hooks/conf_regen/??-mdns pre
+[ -n "$YNH_BUILDER_INSTALL_INTERNETCUBE" ] || systemctl daemon-reload
 [ -n "$YNH_BUILDER_INSTALL_INTERNETCUBE" ] || systemctl restart yunomdns
 
 # Configure nginx + ssowat
