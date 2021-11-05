@@ -9,7 +9,7 @@ firmware-linux-free
 php-cli php-common php-intl php-json php-pear php-auth-sasl php-mail-mime
 php-patchwork-utf8 php-net-smtp php-net-socket php-zip php-gd php-mbstring
 php-curl
-python3-venv avahi-utils python3-setuptools python3-wheel"
+python3-venv python3-setuptools python3-wheel"
 
 apt install -o Dpkg::Options::='--force-confold' $APT_DEPS -y
 
@@ -21,14 +21,13 @@ pip install wheel
 pip install -r requirements.txt
 deactivate
 
-# Configure avahi aliases (internetcube.local, briqueinternet.local)
+# Configure .local aliases (internetcube.local, briqueinternet.local)
 
-cp deploy/avahi-alias.service /etc/systemd/system/avahi-alias@.service
-systemctl enable avahi-alias@internetcube.local.service
-systemctl enable avahi-alias@briqueinternet.local.service
+echo "internetcube" > /etc/yunohost/mdns.aliases
+echo "briqueinternet" >> /etc/yunohost/mdns.aliases
 
-[ -n "$YNH_BUILDER_INSTALL_INTERNETCUBE" ] || systemctl start avahi-alias@internetcube.local.service
-[ -n "$YNH_BUILDER_INSTALL_INTERNETCUBE" ] || systemctl start avahi-alias@briqueinternet.local.service
+bash /usr/share/yunohost/hooks/conf_regen/??-mdns pre
+[ -n "$YNH_BUILDER_INSTALL_INTERNETCUBE" ] || systemctl restart yunomdns
 
 # Configure nginx + ssowat
 
