@@ -7,41 +7,57 @@ from requests.utils import requote_uri
 steps = []
 current_step = None
 
+
 def step(func):
     steps.append(func)
     return func
 
+
 @step
 def upgrade(install_params):
 
-    apt = "DEBIAN_FRONTEND=noninteractive APT_LISTCHANGES_FRONTEND=none LC_ALL=C " \
-          "apt-get -o=Acquire::Retries=3 -o=Dpkg::Use-Pty=0 --quiet --assume-yes "
+    apt = (
+        "DEBIAN_FRONTEND=noninteractive APT_LISTCHANGES_FRONTEND=none LC_ALL=C "
+        "apt-get -o=Acquire::Retries=3 -o=Dpkg::Use-Pty=0 --quiet --assume-yes "
+    )
 
     run_cmd(apt + "update")
-    run_cmd(apt + "dist-upgrade -o Dpkg::Options::='--force-confold' --fix-broken --show-upgraded")
+    run_cmd(
+        apt
+        + "dist-upgrade -o Dpkg::Options::='--force-confold' --fix-broken --show-upgraded"
+    )
     run_cmd(apt + "autoremove")
 
 
 @step
 def postinstall(install_params):
 
-    run_cmd("yunohost tools postinstall -d '{main_domain}' -p '{password}'".format(**install_params))
+    run_cmd(
+        "yunohost tools postinstall -d '{main_domain}' -p '{password}'".format(
+            **install_params
+        )
+    )
+
 
 @step
 def firstuser(install_params):
 
     if " " in install_params["fullname"].strip():
-        install_params["firstname"], install_params["lastname"] = install_params["fullname"].strip().split(" ", 1)
+        install_params["firstname"], install_params["lastname"] = (
+            install_params["fullname"].strip().split(" ", 1)
+        )
     else:
         install_params["firstname"] = install_params["fullname"]
-        install_params["lastname"] = "FIXMEFIXME" # FIXME
+        install_params["lastname"] = "FIXMEFIXME"  # FIXME
 
-    run_cmd("yunohost user create '{username}' -q 0 "
-            "-f '{firstname}' "
-            "-l '{lastname}' "
-            "-d '{main_domain}' "
-            "-p '{password}'"
-            .format(**install_params))
+    run_cmd(
+        "yunohost user create '{username}' -q 0 "
+        "-f '{firstname}' "
+        "-l '{lastname}' "
+        "-d '{main_domain}' "
+        "-p '{password}'".format(**install_params)
+    )
+
 
 @step
 def install_vpnclient(install_params):
@@ -64,6 +80,7 @@ def configure_vpnclient(install_params):
 
     run_cmd("yunohost app config set vpnclient --args 'config_file=/tmp/config.cube'")
 
+
 @step
 def install_hotspot(install_params):
     if not install_params["enable_wifi"]:
@@ -73,17 +90,21 @@ def install_hotspot(install_params):
     wifi_ssid_esc = requote_uri(install_params["wifi_ssid"])
     wifi_password_esc = requote_uri(install_params["wifi_password"])
 
-    run_cmd("yunohost app install hotspot --force --args '"
-            "domain={main_domain_esc}"
-            "&path=/wifiadmin"
-            "&wifi_ssid={wifi_ssid_esc}"
-            "&wifi_passphrase={wifi_password_esc}"
-            "&firmware_nonfree=no'"
-            .format(main_domain_esc=main_domain_esc,
-                    wifi_ssid_esc=wifi_ssid_esc,
-                    wifi_password_esc=wifi_password_esc))
+    run_cmd(
+        "yunohost app install hotspot --force --args '"
+        "domain={main_domain_esc}"
+        "&path=/wifiadmin"
+        "&wifi_ssid={wifi_ssid_esc}"
+        "&wifi_passphrase={wifi_password_esc}"
+        "&firmware_nonfree=no'".format(
+            main_domain_esc=main_domain_esc,
+            wifi_ssid_esc=wifi_ssid_esc,
+            wifi_password_esc=wifi_password_esc,
+        )
+    )
 
     run_cmd("yunohost app addaccess hotspot -u {username}".format(**install_params))
+
 
 @step
 def cleanup(install_params):
@@ -103,29 +124,41 @@ def cleanup(install_params):
         "systemctl disable --now internetcube",
     ]
 
-    open("/tmp/internetcube-cleanup", "w").write("rm /tmp/internetcube-cleanup;\n" + "\n".join(cmds))
+    open("/tmp/internetcube-cleanup", "w").write(
+        "rm /tmp/internetcube-cleanup;\n" + "\n".join(cmds)
+    )
     os.system("systemd-run --scope bash /tmp/internetcube-cleanup &")
 
     time.sleep(5)
 
+
 # ===============================================================
 # ===============================================================
 # ===============================================================
+
 
 def run_cmd(cmd):
 
     append_step_log("Running: " + cmd)
-    subprocess.check_call(cmd + " &>> ./data/%s.logs" % current_step.__name__, shell=True, executable='/bin/bash')
+    subprocess.check_call(
+        cmd + " &>> ./data/%s.logs" % current_step.__name__,
+        shell=True,
+        executable="/bin/bash",
+    )
+
 
 def append_step_log(message):
     open("./data/%s.logs" % current_step.__name__, "a").write(message + "\n")
 
+
 def set_step_status(status):
     open("./data/%s.status" % current_step.__name__, "w").write(status)
+
 
 def get_step_status():
     f = "./data/%s.status" % current_step.__name__
     return open(f, "r").read().strip() if os.path.exists(f) else None
+
 
 if __name__ == "__main__":
 
@@ -154,6 +187,7 @@ if __name__ == "__main__":
         except Exception as e:
             set_step_status("failed")
             import traceback
+
             append_step_log(traceback.format_exc())
             append_step_log(str(e))
             break
