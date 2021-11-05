@@ -48,8 +48,7 @@ def install_vpnclient(install_params):
     if not install_params["enable_vpn"]:
         return "skipped"
 
-    main_domain_esc = requote_uri(install_params["main_domain"])
-    run_cmd("yunohost app install vpnclient --force --args 'domain=%s&path=/vpnadmin'" % main_domain_esc)
+    run_cmd("yunohost app install vpnclient --force")
 
 
 @step
@@ -57,14 +56,13 @@ def configure_vpnclient(install_params):
     if not install_params["enable_vpn"]:
         return "skipped"
 
-    run_cmd("yunohost app addaccess vpnclient -u '{username}'".format(**install_params))
     run_cmd("yunohost app setting vpnclient service_enabled -v 1")
 
     open("/tmp/config.cube", "w").write(install_params["cubefile"])
     os.system("chown root:root /tmp/config.cube")
     os.system("chmod 600 /tmp/config.cube")
 
-    run_cmd("ynh-vpnclient-loadcubefile.sh -u '{username}' -p '{password}' -c /tmp/config.cube".format(**install_params))
+    run_cmd("yunohost app config set vpnclient --args 'config_file=/tmp/config.cube'")
 
 @step
 def install_hotspot(install_params):
