@@ -227,7 +227,7 @@ to_redact = []
 def update_info_to_redact():
 
     if not os.path.exists("./data/install_params.json"):
-        return content
+        return
 
     data = json.loads(open("./data/install_params.json").read())
 
@@ -244,12 +244,3 @@ def redact_passwords(content):
         content = content.replace(value, "[REDACTED]")
 
     return content
-
-
-def local_ipv4():
-
-    local_ips = subprocess.check_output("hostname -I", shell=True).strip().decode("utf-8")
-    local_ip4s = [ip for ip in local_ips.split() if ":" not in ip]
-    local_ip4 = local_ipv4s[0] if local_ip4s else None
-
-    return local_ipv4
