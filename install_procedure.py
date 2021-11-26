@@ -86,24 +86,15 @@ def install_hotspot(install_params):
     if not install_params["enable_wifi"]:
         return "skipped"
 
-    main_domain_esc = requote_uri(install_params["main_domain"])
     wifi_ssid_esc = requote_uri(install_params["wifi_ssid"])
     wifi_password_esc = requote_uri(install_params["wifi_password"])
 
     run_cmd(
         "yunohost app install hotspot --force --args '"
-        "domain={main_domain_esc}"
-        "&path=/wifiadmin"
-        "&wifi_ssid={wifi_ssid_esc}"
-        "&wifi_passphrase={wifi_password_esc}"
-        "&firmware_nonfree=no'".format(
-            main_domain_esc=main_domain_esc,
-            wifi_ssid_esc=wifi_ssid_esc,
-            wifi_password_esc=wifi_password_esc,
-        )
+        f"&wifi_ssid={wifi_ssid_esc}"
+        f"&wifi_passphrase={wifi_password_esc}"
+        "&firmware_nonfree=no'"
     )
-
-    run_cmd("yunohost app addaccess hotspot -u {username}".format(**install_params))
 
 
 @step
