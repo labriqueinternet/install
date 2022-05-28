@@ -6,9 +6,6 @@
 APT_DEPS="file jq sipcalc hostapd iptables iw dnsutils 
 openvpn curl fake-hwclock
 firmware-linux-free
-php-cli php-common php-intl php-json php-pear php-auth-sasl php-mail-mime
-php-patchwork-utf8 php-net-smtp php-net-socket php-zip php-gd php-mbstring
-php-curl
 python3-venv python3-setuptools python3-wheel"
 
 apt install -o Dpkg::Options::='--force-confold' $APT_DEPS -y
