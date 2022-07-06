@@ -10,5 +10,5 @@ Jinja2==2.11.3
 MarkupSafe==1.1.1
 pytz==2020.1
 requests==2.24.0
-urllib3==1.26.5
+urllib3==1.24
 Werkzeug==1.0.1
