@@ -9,7 +9,6 @@ $(document).ready(function() {
     $("#completed-1").hide();
     $("#completed-2").hide();
 
-
     function steps_update_view()
     {
         $.getJSON(window.location + "/status")
