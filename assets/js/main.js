@@ -1,3 +1,5 @@
+let YUNOHOSTDOMAINS = [".noho.st",".ynh.fr",".nohost.me"]
+
 $(document).ready(function() {
 
     if (window.location.pathname != "/install") {
@@ -6,6 +8,7 @@ $(document).ready(function() {
 
     $("#completed-1").hide();
     $("#completed-2").hide();
+
 
     function steps_update_view()
     {
@@ -184,6 +187,24 @@ $(document).ready(function() {
         };
     };
 
+	function form_update_subscribe(){
+		var yunohost = false;
+		for (let i in YUNOHOSTDOMAINS){
+			if ($("#main_domain").val().endsWith(YUNOHOSTDOMAINS[i])){
+				yunohost = true;
+			}
+		}
+		var body = $(".subscribe-password-div")
+		if (yunohost){
+			body.show();
+            $("input", body).addClass("validate");
+		} else {
+			body.hide();
+			$("#domain_password").val("");
+            $("input", body).removeClass("validate");
+		}
+	}
+	
     function form_update_optional_section(name)
     {
         status_ = $("#enable_" + name)[0].checked;
@@ -289,6 +310,9 @@ $(document).ready(function() {
 
         $(".invalid-feedback").hide();
         $(".invalid-feedback.default").css("display", "");
+
+		$("#main_domain").on("change",form_update_subscribe)
+		form_update_subscribe()
 
         cube_input = $("input[id='cubefile']");
         cube_input.change(form_update_cube_file_input);

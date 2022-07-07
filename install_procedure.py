@@ -31,12 +31,11 @@ def upgrade(install_params):
 
 @step
 def postinstall(install_params):
+    command = "yunohost tools postinstall --force-diskspace -d '{main_domain}' -p '{password}'".format(**install_params)
+    if install_params["use_dyndns_domain"] and len(install_params["domain_password"])>0:
+        command+=f" --subscribe {install_params['domain_password']}"
 
-    run_cmd(
-        "yunohost tools postinstall -d '{main_domain}' -p '{password}'".format(
-            **install_params
-        )
-    )
+    run_cmd(command)
 
 
 @step
