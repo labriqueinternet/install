@@ -28,18 +28,18 @@
 						</div>
 						<label for="domain_password" class="col-3 col-form-label">{{ _("Domain password") }}</label>
 						<div class="col-9">
-							<input type="password" class="validate form-control" name="domain_password" id="domain_password" pattern="^.{8,}$">
+							<input type="password" class="validate form-control" name="domain_password" id="domain_password" pattern="^.{12,}$">
 							<div class="invalid-feedback default">
-								{{ _("Passwords must be at least 8 characters") }}
+								{{ _("Passwords must be at least 12 characters") }}
 							</div>
 						</div>
 					</div>
 					<div class="form-group row">
 					  <label for="domain_password_repeat" class="col-3 col-form-label">{{ _("Domain Password (repeat)") }}</label>
 					  <div class="col-9">
-						  <input type="password" class="validate form-control" name="domain_password_repeat" id="domain_password_repeat" pattern="^.{8,}$" custom-validation>
+						  <input type="password" class="validate form-control" name="domain_password_repeat" id="domain_password_repeat" pattern="^.{12,}$" custom-validation>
 						  <div class="invalid-feedback default">
-							  {{ _("Passwords must be at least 8 characters") }}
+							  {{ _("Passwords must be at least 12 characters") }}
 						  </div>
 						  <div class="invalid-feedback nomatch">
 							  {{ _("Passwords do not match") }}
