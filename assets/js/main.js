@@ -200,6 +200,7 @@ $(document).ready(function() {
 		} else {
 			body.hide();
 			$("#domain_password").val("");
+			$("#domain_password_repeat").val("");
             $("input", body).removeClass("validate");
 		}
 	}
@@ -247,6 +248,14 @@ $(document).ready(function() {
         else if (id == "wifi_password_repeat")
         {
             if (item.val() !== $("input[id='wifi_password']").val())
+            {
+                return "nomatch";
+            }
+            return true;
+        }
+        else if (id == "domain_password_repeat")
+        {
+            if (item.val() !== $("input[id='domain_password']").val())
             {
                 return "nomatch";
             }
