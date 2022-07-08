@@ -279,16 +279,22 @@ $(document).ready(function() {
                     item.siblings(".invalid-feedback").hide();
                     item.siblings(".invalid-feedback."+result).css("display", "");
                     item.addClass("is-invalid");
+                    item.attr("aria-invalid","true");
+					item.attr("aria-errormessage",item.attr('id')+"_err"+result);
                     return false;
                 }
             }
 
             item.addClass("is-valid");
+            item.removeAttr("aria-invalid");
+            item.removeAttr("aria-errormessage");
             return true;
         }
         else
         {
             item.addClass("is-invalid");
+            item.attr("aria-invalid","true");
+			item.attr("aria-errormessage",item.attr('id')+"_errdefault");
             return false;
         }
     };
