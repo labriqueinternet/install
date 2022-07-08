@@ -3,25 +3,52 @@
 {% block main %}
 <form id="install_form" action="/" method="POST" novalidate class="mt-5">
 <div class="row justify-content-center">
-    <div class="col-lg-8 col-sm-10 mb-3">
-        <div class="card">
-          <h4 class="card-header">{{ _("Server configuration") }}</h4>
-          <div class="alert alert-info card-header">
-              <i class="fa fa-info-circle" aria-hidden="true"></i>
-              {{ _("This is the domain that will be used to name and reach your internet cube. If you do not already own a domain name, you can pick a free domain ending with .nohost.me, .noho.st or .ynh.fr. It will automatically be configured during the setup.") }}
-          </div>
-          <div class="card-body">
-              <div class="form-group row">
-                  <label for="main_domain" class="col-3 col-form-label">{{ _("Main domain") }}</label>
-                  <div class="col-9">
-                      <input type="text" class="validate form-control" name="main_domain" id="main_domain" placeholder="{{ _("myserver.nohost.me") }}" pattern="^([^\W_A-Z]+([-]*[^\W_A-Z]+)*\.)+([^\W\d_]{2,})$">
-                      <div class="invalid-feedback default">
-                          {{ _("Please specify a valid domain") }}
-                      </div>
-                  </div>
-              </div>
-          </div>
-        </div>
+	<div class="col-lg-8 col-sm-10 mb-3">
+		<div class="card">
+			<h4 class="card-header">{{ _("Server configuration") }}</h4>
+			<div class="alert alert-info card-header">
+				<i class="fa fa-info-circle" aria-hidden="true"></i>
+				{{ _("This is the domain that will be used to name and reach your internet cube. If you do not already own a domain name, you can pick a free domain ending with .nohost.me, .noho.st or .ynh.fr. It will automatically be configured during the setup.") }}
+			</div>
+			<div class="card-body">
+				<div class="form-group row">
+					<label for="main_domain" class="col-3 col-form-label">{{ _("Main domain") }}</label>
+					<div class="col-9">
+						<input type="text" class="validate form-control" name="main_domain" id="main_domain" placeholder="{{ _("myserver.nohost.me") }}" pattern="^([^\W_A-Z]+([-]*[^\W_A-Z]+)*\.)+([^\W\d_]{2,})$">
+						<div class="invalid-feedback default" id="main_domain_errdefault">
+							{{ _("Please specify a valid domain") }}
+						</div>
+					</div>
+				</div>
+				<div class="subscribe-password-div">
+					<div class="form-group row">
+						<div class="alert alert-info card-header">
+							<i class="fa fa-info-circle" aria-hidden="true"></i>
+							{{ _("This kind of domain is freely provided by the YunoHost project. Please remember the password you enter, it will be used to keep control of the domain even if you loose control of your server.") }}
+						</div>
+						<label for="domain_password" class="col-3 col-form-label">{{ _("Domain password") }}</label>
+						<div class="col-9">
+							<input type="password" class="validate form-control" name="domain_password" id="domain_password" pattern="^.{12,}$">
+							<div class="invalid-feedback default" id="domain_password_errdefault">
+								{{ _("Passwords must be at least 12 characters") }}
+							</div>
+						</div>
+					</div>
+					<div class="form-group row">
+					  <label for="domain_password_repeat" class="col-3 col-form-label">{{ _("Domain Password (repeat)") }}</label>
+					  <div class="col-9">
+						  <input type="password" class="validate form-control" name="domain_password_repeat" id="domain_password_repeat" pattern="^.{12,}$" custom-validation>
+						  <div class="invalid-feedback default" id="domain_password_repeat_errdefault">
+							  {{ _("Passwords must be at least 12 characters") }}
+						  </div>
+						  <div class="invalid-feedback nomatch" id="domain_password_repeat_errnomatch">
+							  {{ _("Passwords do not match") }}
+						  </div>
+					  </div>
+					</div>
+				</div>
+			</div>
+		</div>
     </div>
 
     <div class="col-lg-8 col-sm-10 mb-3">
@@ -32,7 +59,7 @@
                   <label for="username" class="col-3 col-form-label">{{ _("Username") }}</label>
                   <div class="col-9">
                       <input type="text" class="validate form-control" name="username" id="username" placeholder="{{ _("sasha") }}" pattern="^[a-z0-9_]{3,}$">
-                      <div class="invalid-feedback default">
+                      <div class="invalid-feedback default" id="username_errdefault">
                           {{ _("Please specify a valid username with at least three characters (only lowercase, numbers or _)") }}
                       </div>
                   </div>
@@ -47,7 +74,7 @@
                   <label for="password" class="col-3 col-form-label">{{ _("Password") }}</label>
                   <div class="col-9">
                       <input type="password" class="validate form-control" name="password" id="password" pattern="^.{8,}$">
-                      <div class="invalid-feedback default">
+                      <div class="invalid-feedback default" id="password_errdefault">
                           {{ _("Passwords must be at least 8 characters") }}
                       </div>
                   </div>
@@ -56,10 +83,10 @@
                   <label for="password_repeat" class="col-3 col-form-label">{{ _("Password (repeat)") }}</label>
                   <div class="col-9">
                       <input type="password" class="validate form-control" name="password_repeat" id="password_repeat" pattern="^.{8,}$" custom-validation>
-                      <div class="invalid-feedback default">
+                      <div class="invalid-feedback default" id="password_repeat_errdefault">
                           {{ _("Passwords must be at least 8 characters") }}
                       </div>
-                      <div class="invalid-feedback nomatch">
+                      <div class="invalid-feedback nomatch" id="password_repeat_errnomatch">
                           {{ _("Passwords do not match") }}
                       </div>
                   </div>
@@ -86,10 +113,10 @@
                   <div class="custom-file col-9">
                       <input type="file" class="validate custom-file-input" name="cubefile" id="cubefile" accept=".cube" custom-validation>
                       <label class="custom-file-label" for="cubefile">{{ _("Choose file") }}</label>
-                      <div class="invalid-feedback default">
+                      <div class="invalid-feedback default" id="cubefile_errdefault">
                           {{ _("You must provide a valid .cube file to enable the VPN") }}
                       </div>
-                      <div class="invalid-feedback invalidjson">
+                      <div class="invalid-feedback invalidjson" id="cubefile_errinvalidjson">
                           {{ _("Could not load this file as json ... Is it a valid .cube file ?") }}
                       </div>
                   </div>
@@ -121,7 +148,7 @@
                   <label for="wifi_password" class="col-3 col-form-label">{{ _("Password") }}</label>
                   <div class="col-9">
                       <input type="password" class="validate form-control" name="wifi_password" id="wifi_password" pattern="^.{8,}$">
-                      <div class="invalid-feedback default">
+                      <div class="invalid-feedback default" id="wifi_password_errdefault">
                           {{ _("Passwords must be at least 8 characters") }}
                       </div>
                   </div>
@@ -130,10 +157,10 @@
                   <label for="wifi_password_repeat" class="col-3 col-form-label">{{ _("Password (repeat)") }}</label>
                   <div class="col-9">
                       <input type="password" class="validate form-control" name="wifi_password_repeat" id="wifi_password_repeat" pattern="^.{8,}$" custom-validation>
-                      <div class="invalid-feedback default">
+                      <div class="invalid-feedback default" id="wifi_password_repeat_errdefault">
                           {{ _("Passwords must be at least 8 characters") }}
                       </div>
-                      <div class="invalid-feedback nomatch">
+                      <div class="invalid-feedback nomatch" id="wifi_password_repeat_errnomatch">
                           {{ _("Passwords do not match") }}
                       </div>
                   </div>

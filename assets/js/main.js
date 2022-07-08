@@ -1,3 +1,5 @@
+let YUNOHOSTDOMAINS = [".noho.st",".ynh.fr",".nohost.me"]
+
 $(document).ready(function() {
 
     if (window.location.pathname != "/install") {
@@ -184,6 +186,25 @@ $(document).ready(function() {
         };
     };
 
+	function form_update_subscribe(){
+		var yunohost = false;
+		for (let i in YUNOHOSTDOMAINS){
+			if ($("#main_domain").val().endsWith(YUNOHOSTDOMAINS[i])){
+				yunohost = true;
+			}
+		}
+		var body = $(".subscribe-password-div")
+		if (yunohost){
+			body.show();
+            $("input", body).addClass("validate");
+		} else {
+			body.hide();
+			$("#domain_password").val("");
+			$("#domain_password_repeat").val("");
+            $("input", body).removeClass("validate");
+		}
+	}
+	
     function form_update_optional_section(name)
     {
         status_ = $("#enable_" + name)[0].checked;
@@ -232,6 +253,14 @@ $(document).ready(function() {
             }
             return true;
         }
+        else if (id == "domain_password_repeat")
+        {
+            if (item.val() !== $("input[id='domain_password']").val())
+            {
+                return "nomatch";
+            }
+            return true;
+        }
     };
 
     function form_validate_item(item)
@@ -250,16 +279,22 @@ $(document).ready(function() {
                     item.siblings(".invalid-feedback").hide();
                     item.siblings(".invalid-feedback."+result).css("display", "");
                     item.addClass("is-invalid");
+                    item.attr("aria-invalid","true");
+					item.attr("aria-errormessage",item.attr('id')+"_err"+result);
                     return false;
                 }
             }
 
             item.addClass("is-valid");
+            item.removeAttr("aria-invalid");
+            item.removeAttr("aria-errormessage");
             return true;
         }
         else
         {
             item.addClass("is-invalid");
+            item.attr("aria-invalid","true");
+			item.attr("aria-errormessage",item.attr('id')+"_errdefault");
             return false;
         }
     };
@@ -289,6 +324,9 @@ $(document).ready(function() {
 
         $(".invalid-feedback").hide();
         $(".invalid-feedback.default").css("display", "");
+
+		$("#main_domain").on("change",form_update_subscribe)
+		form_update_subscribe()
 
         cube_input = $("input[id='cubefile']");
         cube_input.change(form_update_cube_file_input);
