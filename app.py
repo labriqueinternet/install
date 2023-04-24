@@ -61,7 +61,6 @@ def main():
     steps_with_i18n = [
         ("upgrade", _("System upgrade")),
         ("postinstall", _("Server initialization")),
-        ("firstuser", _("First user creation")),
         ("install_vpnclient", _("VPN installation")),
         ("configure_vpnclient", _("VPN configuration")),
         ("install_hotspot", _("WiFi Hotspot installation")),
