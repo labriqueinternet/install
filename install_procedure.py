@@ -33,29 +33,9 @@ def upgrade(install_params):
 def postinstall(install_params):
 
     run_cmd(
-        "yunohost tools postinstall -d '{main_domain}' -p '{password}'".format(
+        "yunohost tools postinstall -d '{main_domain}' -u '{username}' -F '{fullname}' -p '{password}'".format(
             **install_params
         )
-    )
-
-
-@step
-def firstuser(install_params):
-
-    if " " in install_params["fullname"].strip():
-        install_params["firstname"], install_params["lastname"] = (
-            install_params["fullname"].strip().split(" ", 1)
-        )
-    else:
-        install_params["firstname"] = install_params["fullname"]
-        install_params["lastname"] = "FIXMEFIXME"  # FIXME
-
-    run_cmd(
-        "yunohost user create '{username}' -q 0 "
-        "-f '{firstname}' "
-        "-l '{lastname}' "
-        "-d '{main_domain}' "
-        "-p '{password}'".format(**install_params)
     )
 
 
@@ -72,13 +52,11 @@ def configure_vpnclient(install_params):
     if not install_params["enable_vpn"]:
         return "skipped"
 
-    run_cmd("yunohost app setting vpnclient service_enabled -v 1")
-
     open("/tmp/config.cube", "w").write(install_params["cubefile"])
     os.system("chown root:root /tmp/config.cube")
     os.system("chmod 600 /tmp/config.cube")
 
-    run_cmd("yunohost app config set vpnclient --args 'config_file=/tmp/config.cube'")
+    run_cmd("yunohost app config set vpnclient --args 'config_file=/tmp/config.cube&service_enabled=1'")
 
 
 @step
