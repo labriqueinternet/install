@@ -33,7 +33,7 @@ def upgrade(install_params):
 def postinstall(install_params):
 
     run_cmd(
-        "yunohost tools postinstall -d '{main_domain}' -u '{username}' -F '{fullname}' -p '{password}'".format(
+        "yunohost tools postinstall --i-have-read-terms-of-services -d '{main_domain}' -u '{username}' -F '{fullname}' -p '{password}'".format(
             **install_params
         )
     )
